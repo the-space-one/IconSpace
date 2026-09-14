@@ -9,10 +9,10 @@ import type { IconHandle } from "./types";
  * ANIMATION STORYBOARD — envelope flap
  *
  *     0ms  flap closed (rest)              (S0)
- *   295ms  flap swings fully open upward   (S1, ease-in-out-cubic arc)
- *   630ms  flap held open (linear hold)    (S1, reads as "reading" the mail)
- *   880ms  flap falls back, slight sag     (S2, gentler ease-in-out-quad)
- *  1050ms  flap settles closed             (S0, soft settle landing)
+ *   196ms  flap swings fully open upward   (S1, ease-in-out-cubic arc)
+ *   420ms  flap held open (linear hold)    (S1, reads as "reading" the mail)
+ *   588ms  flap falls back, slight sag     (S2, gentler ease-in-out-quad)
+ *   700ms  flap settles closed             (S0, soft settle landing)
  * ───────────────────────────────────────────── */
 
 const FLAP_CLOSED =
@@ -47,7 +47,7 @@ const SEQUENCE: AnimationSequence = [
     ".email-flap",
     { d: [FLAP_CLOSED, FLAP_OPEN, FLAP_OPEN, FLAP_SETTLE, FLAP_CLOSED] },
     {
-      duration: 1.05,
+      duration: 0.7,
       times: [0, 0.28, 0.6, 0.84, 1],
       ease: [EASE_IN_OUT_CUBIC, "linear", EASE_IN_OUT_QUAD, EASE_SETTLE],
     },
