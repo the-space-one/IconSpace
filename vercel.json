@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/mirror-waitlist",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/resend-confirmations",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

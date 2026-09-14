@@ -1,0 +1,593 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-makenfy), var(--font-outfit), sans-serif;
+  --font-description: var(--font-froundy), var(--font-geist-sans), sans-serif;
+  --font-display: var(--font-outfit);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --selection-background: oklch(0.92 0.035 285);
+  --selection-foreground: oklch(0.3 0.075 285);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --selection-background: oklch(0.38 0.07 285);
+  --selection-foreground: oklch(0.97 0.012 285);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* A quiet, theme-aware lavender wash, distinct from the filled CTA.
+     Set both colors so selected muted copy stays as readable as headings. */
+  ::selection {
+    background-color: var(--selection-background);
+    color: var(--selection-foreground);
+    text-shadow: none;
+  }
+  @media (forced-colors: active) {
+    ::selection {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+  /* Chrome and Safari paint a pale blue wash over autofilled inputs, which
+     shows through because our inputs are transparent by design — the wrapper
+     owns the background. A plain background-color can't override it, so defer
+     the autofill paint indefinitely. Keeps transparency in both themes without
+     hard-coding a fill colour per theme. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    transition: background-color 600000s 0s;
+    -webkit-text-fill-color: var(--foreground);
+    caret-color: var(--foreground);
+  }
+}
+
+/* Wind-swayed grass footer */
+@keyframes grass-sway {
+  0%,
+  100% {
+    transform: rotate(calc(var(--base, 0deg) - var(--sway, 3deg)));
+  }
+  50% {
+    transform: rotate(calc(var(--base, 0deg) + var(--sway, 3deg)));
+  }
+}
+
+.grass-blade {
+  transform: rotate(var(--base, 0deg));
+  transform-origin: bottom center;
+  animation: grass-sway var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grass-blade {
+    animation: none;
+  }
+}
+
+/* The wheel of light behind a revealed easter egg. Linear and infinite: it is
+   constant motion, and any easing would make it visibly stall once a turn.
+   Kept in CSS rather than driven from JavaScript so it runs off the main
+   thread while the spring lands the egg on top of it. */
+@keyframes egg-rays-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.egg-rays {
+  animation: egg-rays-spin 18s linear infinite;
+  will-change: transform;
+}
+
+.egg-rays-slow {
+  animation: egg-rays-spin 31s linear infinite reverse;
+  will-change: transform;
+}
+
+/* A hidden egg asking to be noticed. Almost all of the cycle is stillness —
+   a hop that ran continuously would read as a loading spinner and pull the
+   eye off the page for good.
+ *
+ * What sells a hop as weight rather than as a slide is gravity and contact,
+ * and neither survives a single ease across the whole thing. So every segment
+ * carries its own timing function: the crouch and the push-off are fast out of
+ * rest, the climb decelerates into the apex, the fall accelerates out of it,
+ * and the squash at the floor happens over 60ms — an impact, not a fade. Each
+ * rebound is roughly 40% of the one before, which is what makes three hops
+ * read as one bouncing object instead of three unrelated hops.
+ *
+ * Runs on a wrapper sized exactly to the artwork, so `transform-origin:
+ * bottom` is the egg's own bottom edge and the squash plants there. On the
+ * button it would be 11px of empty hit area lower, and the egg would sink
+ * into the page every time it landed. */
+@keyframes egg-attention {
+  0%,
+  78% {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.25, 0, 0.15, 1);
+  }
+  /* Crouch. */
+  81% {
+    transform: translateY(0) scale(1.12, 0.88);
+    animation-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
+  }
+  /* Leaving the ground, stretched by the push. */
+  83% {
+    transform: translateY(calc(var(--hop, 10px) * -0.3)) scale(0.93, 1.11);
+    animation-timing-function: cubic-bezier(0.1, 0.7, 0.35, 1);
+  }
+  /* Apex — momentarily weightless, so back to its own shape. Placed so the
+     climb and the fall either side of it take the same time, which is the
+     one thing a hop cannot get wrong and still look like gravity. */
+  86.6% {
+    transform: translateY(calc(var(--hop, 10px) * -1)) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.5);
+  }
+  /* Falling fast, stretched along the fall. */
+  90.4% {
+    transform: translateY(calc(var(--hop, 10px) * -0.3)) scale(0.94, 1.08);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.55);
+  }
+  /* Contact — 60ms of it. */
+  91.6% {
+    transform: translateY(0) scale(1.17, 0.85);
+    animation-timing-function: cubic-bezier(0.12, 0.72, 0.3, 1);
+  }
+  /* The two rebounds are too quick to show squash detail, so they are plain
+     arcs. Heights decay 1 → 0.4 → 0.12, which is what ties them together as
+     one object losing energy instead of three separate twitches. */
+  94.2% {
+    transform: translateY(calc(var(--hop, 10px) * -0.4)) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.55);
+  }
+  96.4% {
+    transform: translateY(0) scale(1.09, 0.93);
+    animation-timing-function: cubic-bezier(0.15, 0.72, 0.3, 1);
+  }
+  98.2% {
+    transform: translateY(calc(var(--hop, 10px) * -0.12)) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.55);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+.egg-idle {
+  /* linear on the shorthand: every keyframe above sets its own timing
+     function, and whatever is declared here would only apply to the last
+     segment. Saying `ease-in-out` here would be a lie about all the others. */
+  animation: egg-attention 5s linear infinite;
+  transform-origin: 50% 100%;
+}
+
+/* The score arriving in the corner, whether an egg was just found or the count
+   came back out of storage on a fresh load. */
+@keyframes egg-counter-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.egg-counter-in {
+  /* ease-out-expo, as the page's own entrance uses. */
+  animation: egg-counter-in 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-counter-in {
+    animation: none;
+  }
+}
+
+/* Confetti, for finding all four — fired from two cannons just off the bottom
+   corners of the window rather than dropped from the top edge.
+ *
+ * A cannon shot is a parabola, and a parabola cannot come out of one keyframed
+ * transform: the horizontal speed bleeds off to drag while the vertical speed
+ * reverses under gravity, so the two axes need different timing functions at
+ * the same instant. Hence three nested elements — one owns X, one owns Y, one
+ * owns the tumble — whose transforms multiply into the arc.
+ *
+ * No `will-change`: with three layers a piece that is a couple of hundred
+ * elements, and hinting every one of them costs more in layer memory than it
+ * saves. A running transform animation is promoted anyway. */
+@keyframes confetti-fly-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--dx, 0), 0, 0);
+  }
+}
+
+@keyframes confetti-fly-y {
+  0% {
+    transform: translate3d(0, 0, 0);
+    /* Climbing against gravity — decelerating the whole way to the apex. */
+    animation-timing-function: cubic-bezier(0.1, 0.62, 0.34, 1);
+  }
+  36% {
+    transform: translate3d(0, var(--rise, -60vh), 0);
+    /* Falling with it — accelerating, then near-terminal as drag catches up. */
+    animation-timing-function: cubic-bezier(0.48, 0, 0.86, 0.66);
+  }
+  100% {
+    transform: translate3d(0, var(--drop, 30vh), 0);
+  }
+}
+
+/* Tumble on a tilted axis, not a flat spin: the X/Y components foreshorten the
+   scrap as it turns, so it thins to an edge and fills back out the way a real
+   piece of paper does. */
+@keyframes confetti-tumble {
+  from {
+    transform: rotate3d(var(--ax, 1), var(--ay, 1), 0.25, 0deg);
+  }
+  to {
+    transform: rotate3d(var(--ax, 1), var(--ay, 1), 0.25, var(--spin, 900deg));
+  }
+}
+
+@keyframes confetti-fade {
+  0%,
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* `both`, not `forwards`, on all of these. With `forwards` a piece sits at its
+   untransformed position for the whole of its stagger delay — which is exactly
+   the shower appearing to wait at the launch point before anything moves. */
+.egg-confetti {
+  animation:
+    confetti-fly-x var(--dur, 3s) cubic-bezier(0.05, 0.72, 0.24, 1)
+      var(--lag, 0s) both,
+    confetti-fade var(--dur, 3s) linear var(--lag, 0s) both;
+}
+
+.egg-confetti-arc {
+  animation: confetti-fly-y var(--dur, 3s) linear var(--lag, 0s) both;
+}
+
+.egg-confetti-piece {
+  animation: confetti-tumble var(--dur, 3s) linear var(--lag, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-confetti {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-rays,
+  .egg-rays-slow,
+  .egg-idle {
+    animation: none;
+  }
+}
+
+/* Logo hover morph — each shape spins around its own center and morphs its
+   corners, then returns to the original shape. One-shot per hover. */
+.logo-morph rect,
+.logo-morph path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes logo-spin-cw {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.72);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@keyframes logo-spin-ccw {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(-180deg) scale(0.72);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
+  }
+}
+/* circle -> squircle -> circle */
+@keyframes logo-rx-square {
+  0%,
+  100% {
+    rx: 19px;
+  }
+  50% {
+    rx: 6px;
+  }
+}
+/* rounded square -> circle -> rounded square */
+@keyframes logo-rx-circle {
+  0%,
+  100% {
+    rx: 7.2px;
+  }
+  50% {
+    rx: 19px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logo-morph:hover .logo-1 {
+    animation:
+      logo-spin-cw 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) both,
+      logo-rx-square 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+  }
+  .logo-morph:hover .logo-2 {
+    animation: logo-spin-ccw 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) 0.09s both;
+  }
+  .logo-morph:hover .logo-3 {
+    animation: logo-spin-cw 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) 0.18s both;
+  }
+  .logo-morph:hover .logo-4 {
+    animation:
+      logo-spin-ccw 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) 0.27s both,
+      logo-rx-circle 0.95s cubic-bezier(0.645, 0.045, 0.355, 1) 0.27s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-morph:hover :where(rect, path) {
+    animation: none;
+  }
+}
+
+/* Header character: explicit parts, one motion owner per wrapper. */
+.cat { overflow: visible; }
+.curious-cat__pose {
+  transform-box: view-box;
+  transform-origin: 105px 170px;
+  transform: translate(0px, 0px) rotate(0deg) scale(1, 1);
+}
+.curious-cat__ear {
+  transform-box: view-box;
+  transform: rotate(0deg);
+}
+.curious-cat__ear--left { transform-origin: 47px 66px; }
+.curious-cat__ear--right { transform-origin: 165px 66px; }
+.curious-cat__gaze-pose { transform: translate(0px, 0px); }
+.curious-cat__eye {
+  transform-box: view-box;
+  transform: scaleY(1);
+}
+
+/* Full peek is the first-paint/base pose, independent of JS or hover.
+   Source cut edge x=.82 in a 25-unit-tall drawing rendered at 36px:
+   .82 * 36/25 = 1.18px. Place that edge 2px under the button. */
+.cta-cat-anchor {
+  left: calc(100% - 3.18px);
+  transform: translateY(-50%);
+}
+.cta-cat__head {
+  transform-box: view-box;
+  transform-origin: 0.82px 21px;
+  transform: rotate(0deg);
+  transition: transform 180ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.cta-cat__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cta__visual {
+  transform: scale(1);
+  transition: transform 120ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+/* Button and anchored cat press together; the outer hover target stays fixed. */
+.cta:has(.cta__button:active:enabled) .cta__visual { transform: scale(0.98); }
+.cta .cta__button:active { translate: none; }
+
+/* Existing 24px page gutter is 8px short of the fully exposed drawing. */
+@media (width < 640px) {
+  .cta-slot { padding-right: 8px; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .cta:has(.cta__button:enabled):hover .cta-cat__head {
+    transform: rotate(2deg);
+    transition-duration: 220ms;
+  }
+  /* One small reaction after the lean, not a repeating idle. */
+  .cta:has(.cta__button:enabled):hover .cta-cat__eye {
+    animation: cta-cat-blink 180ms ease-in-out 220ms;
+  }
+}
+.cta:has(.cta__button:focus-visible) .cta-cat__head {
+  transform: rotate(2deg);
+  transition: none;
+}
+.cta:has(.cta__button:focus-visible) .cta-cat__eye { animation: none; }
+.cta:has(.cta__button:focus-visible) .cta__visual { transition: none; }
+
+@keyframes cta-cat-blink {
+  0%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(0.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta .cta-cat__head, .cta .cta__visual {
+    transform: none;
+    transition: none;
+  }
+  .cta .cta-cat__eye { animation: none; }
+  .cta .cta__button { transition: none; }
+}
+
+/* ── Clean, minimal scrollbar ───────────────────────────────────────────────
+   Thin, rounded, translucent thumb over a transparent track. The 3px
+   transparent border (with padding-box clip) insets the thumb so it reads as a
+   slim pill with breathing room, not a full-width bar. Colors follow the theme. */
+:root {
+  --scrollbar-thumb: oklch(0.145 0 0 / 0.18);
+  --scrollbar-thumb-hover: oklch(0.145 0 0 / 0.34);
+}
+.dark {
+  --scrollbar-thumb: oklch(0.985 0 0 / 0.18);
+  --scrollbar-thumb-hover: oklch(0.985 0 0 / 0.34);
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* WebKit / Chromium */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
