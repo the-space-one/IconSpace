@@ -38,12 +38,39 @@ const froundy = localFont({
   display: "swap",
 });
 
+// Public origin for absolute URLs in metadata (og:image must be absolute).
+// Resolved the same way as the email template: the configured site URL wins,
+// then the Vercel production host, then localhost for `next dev`.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
+
+const title = "Icon Space";
+const description =
+  "Beautifully animated icons. Fast, energetic, delightful motion. Join the waitlist.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   // The tab reads as the brand; the description is what carries the pitch into
   // search results and link previews.
-  title: "Icon Space",
-  description:
-    "Beautifully animated icons. Fast, energetic, delightful motion. Join the waitlist.",
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    siteName: title,
+    type: "website",
+    url: "/",
+    images: [{ url: "/og.webp", width: 1200, height: 630, alt: title }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og.webp"],
+  },
 };
 
 export default function RootLayout({
