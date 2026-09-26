@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const froundy = localFont({
+  src: "../fonts/Froundy-Regular.otf",
+  variable: "--font-froundy-local",
+});
+
+const makenfy = localFont({
+  src: "../fonts/Makenfy-Regular.otf",
+  variable: "--font-makenfy-local",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${froundy.variable} ${makenfy.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
