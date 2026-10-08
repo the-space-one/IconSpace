@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-white">
+    <div className="flex flex-1 flex-col bg-background">
       <header className="px-4 pt-4">
         <Navbar />
       </header>

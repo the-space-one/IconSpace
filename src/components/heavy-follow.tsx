@@ -2,18 +2,10 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-// How long the machine waits before reacting to a scroll, in ms. This is the
-// main "heavy" feel: the page moves, and only then does the machine start.
 const DELAY = 220;
-// Spring toward the (delayed) scroll position. Low stiffness makes it slow to
-// get going; damping below critical (~12.3 here) lets it overshoot when it
-// arrives and swing back, like something heavy moving at full speed.
 const STIFFNESS = 38;
 const DAMPING = 7.5;
 
-// Like `position: sticky`: once its top scrolls to `top` px from the top of the
-// viewport, it follows the page, but lags behind and overshoots, like heavy
-// machinery on a rail. Stops at the bottom of the nearest <main>.
 export function HeavyFollow({
   children,
   className,
@@ -30,7 +22,6 @@ export function HeavyFollow({
     if (!el) return;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-    // Scroll targets waiting out the delay, oldest first.
     const queue: { t: number; y: number }[] = [];
     let goal = 0;
     let y = 0;
@@ -44,8 +35,6 @@ export function HeavyFollow({
       el.style.transform = `translate3d(0, ${y}px, 0)`;
     };
 
-    // Where following starts (scroll position at which its resting top hits
-    // `top`) and the furthest it may travel (its bottom meets <main>'s bottom).
     const measure = () => {
       const rect = el.getBoundingClientRect();
       const bounds = el.closest("main") ?? document.body;
@@ -61,7 +50,6 @@ export function HeavyFollow({
 
       while (queue.length && queue[0].t <= now - DELAY) goal = queue.shift()!.y;
 
-      // Semi-implicit Euler in small steps keeps the spring stable.
       const steps = 4;
       const h = dt / steps;
       for (let i = 0; i < steps; i++) {

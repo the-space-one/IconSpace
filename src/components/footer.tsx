@@ -2,27 +2,20 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Badges } from "@/components/badge";
 
-// Same approach as the hero: lay the 1512×508 band out at design size and
-// scale it to the page width (see hero.tsx for the tan/atan2 trick). Unlike
-// the hero it also scales up, because the floor art stops at the frame edges.
 const scale = {
   "--s": "tan(atan2(100cqw, 1512px))",
 } as CSSProperties;
 
-// Staggered so a new puff leaves the exhaust every ~370ms.
 const EXHAUST_DELAYS = ["0ms", "370ms", "730ms"];
 
 export function Footer() {
   return (
-    // Clipped on both axes: the shelves and floor bleed past the frame on
-    // every side but the top.
     <footer className="@container w-full overflow-clip">
       <div
         style={scale}
         className="mx-auto h-[calc(508px*var(--s))] w-[calc(1512px*var(--s))]"
       >
         <div className="relative h-[508px] w-[1512px] origin-top-left scale-(--s)">
-          {/* Layer order follows Figma: signpost, shelves and floor, forklift, badges. */}
           <Image
             src="/footer/signpost.svg"
             alt=""

@@ -2,8 +2,6 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Reflected, Shelf } from "@/components/shelf";
 
-// Same approach as the hero: lay the 798×147 row out at design size and
-// scale it down on narrower screens (see hero.tsx for the tan/atan2 trick).
 const scale = {
   "--s": "min(1, tan(atan2(100cqw, 798px)))",
 } as CSSProperties;
@@ -19,7 +17,7 @@ const icons = [
 type Icon = (typeof icons)[number];
 
 const tile =
-  "relative flex size-[120px] items-center justify-center rounded-[26.84px] shadow-[inset_0px_0px_0px_1px_#e5e5e5,inset_0px_1px_3px_0px_rgba(0,0,0,0.16)]";
+  "relative flex size-30 items-center justify-center rounded-tile shadow-tile";
 
 function Glyph({ icon }: { icon: Icon }) {
   if ("src" in icon) {
@@ -33,7 +31,6 @@ function Glyph({ icon }: { icon: Icon }) {
       />
     );
   }
-  // The alarm clock is two layers: the bells overhang the body.
   return (
     <div role="img" aria-label={icon.name} className="relative size-[60px]">
       <Image
@@ -62,7 +59,6 @@ export function IconShelf() {
         className="mx-auto h-[calc(147px*var(--s))] w-[calc(798px*var(--s))]"
       >
         <div className="relative h-[147px] w-[798px] origin-top-left scale-(--s)">
-          {/* Glossy shelf the tiles rest on, reflecting them. */}
           <Shelf
             className="absolute top-[108px] w-full"
             reflection={

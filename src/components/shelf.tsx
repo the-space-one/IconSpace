@@ -1,9 +1,5 @@
 import type { ReactNode } from "react";
 
-// Glossy lavender shelf, matched to the one on iconspace.dev: tipped back in
-// perspective so it reads as a surface, with the items above reflected in it.
-// The glows are placed in percentages so it stretches to any width; position
-// it with `className`.
 
 const fill = [
   "radial-gradient(90% 120% at 12% 0%, rgba(159,161,255,0.34) 0%, rgba(159,161,255,0) 42%)",
@@ -19,7 +15,6 @@ const sheen = [
   "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 17%, rgba(255,255,255,0) 28%, rgba(255,255,255,0.3) 52%, rgba(255,255,255,0) 65%)",
 ].join(", ");
 
-// The reflection fades out toward the front edge of the shelf.
 const fade = "linear-gradient(to bottom, #000 0%, #000 45%, transparent 97%)";
 
 export function Shelf({
@@ -27,13 +22,11 @@ export function Shelf({
   reflection,
 }: {
   className?: string;
-  // A copy of the row above, laid out to line up with it and built from
-  // <Reflected> items. It's clipped to the shelf and faded out.
   reflection?: ReactNode;
 }) {
   return (
     <div aria-hidden className={`h-[39.18px] perspective-[1000px] ${className ?? ""}`}>
-      <div className="absolute inset-x-12 top-9 h-2 rounded-full bg-[#9fa1ff]/30 blur-md" />
+      <div className="absolute inset-x-12 top-9 h-2 rounded-full bg-brand-outline/30 blur-md" />
       <div
         style={{ background: fill, transform: "rotateX(13deg)" }}
         className="relative h-full origin-top overflow-hidden rounded-[18px] shadow-[0_1px_2px_rgba(94,96,140,0.22),0_12px_26px_-18px_rgba(120,122,255,0.45),0_12px_22px_-18px_rgba(168,120,255,0.35),inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-1px_0_rgba(104,106,155,0.3)]"
@@ -58,8 +51,6 @@ export function Shelf({
   );
 }
 
-// One item's reflection: flipped upside down from its bottom edge, squashed
-// as if seen at a low angle, and softened.
 export function Reflected({
   children,
   className,

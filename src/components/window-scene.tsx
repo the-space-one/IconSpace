@@ -1,20 +1,12 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
-// The shop window from the hero, split into layers so the cat can bang its paw
-// next to the laptop, blink, and the lamps can sway. Every full-size layer
-// shares the window's 143.5×304 box; the inline SVGs use the same viewBox.
 const VIEW_BOX = "1381.5 369.5 143.5 304";
 
-// The cat's right paw (resting beside the laptop) is part of the cat's single
-// outline path, so we draw the cat twice: once with this box cut out, and once
-// with only this box showing, which then pivots at the wrist.
 const PAW = { left: 89.5, top: 192.5, right: 112.5, bottom: 216.5 };
 const catWithoutPaw = `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${PAW.left}px ${PAW.top}px, ${PAW.right}px ${PAW.top}px, ${PAW.right}px ${PAW.bottom}px, ${PAW.left}px ${PAW.bottom}px, ${PAW.left}px ${PAW.top}px)`;
 const pawOnly = `polygon(${PAW.left}px ${PAW.top}px, ${PAW.right}px ${PAW.top}px, ${PAW.right}px ${PAW.bottom}px, ${PAW.left}px ${PAW.bottom}px)`;
 
-// All three lamps share one drawing. Each one hangs from its bracket at the
-// top-left, and `lens` is where the light leaves the shade.
 const LAMP = {
   src: "/hero/window/lamp.svg",
   width: 19.8625,
@@ -35,6 +27,7 @@ function Layer({ src, style }: { src: string; style?: CSSProperties }) {
       width={143.5}
       height={304}
       style={style}
+      fetchPriority="low"
       className="absolute inset-0 max-w-none"
     />
   );
@@ -42,14 +35,12 @@ function Layer({ src, style }: { src: string; style?: CSSProperties }) {
 
 export function WindowScene() {
   return (
-    // Fills its parent's width; `--s` (the hero's scale) sizes the stage.
     <div className="relative aspect-[143.5/304] w-full">
       <div className="relative h-[304px] w-[143.5px] origin-top-left scale-(--s)">
         <Layer src="/hero/window/plant.svg" />
 
         <Layer src="/hero/window/cat.svg" style={{ clipPath: catWithoutPaw }} />
 
-        {/* Pivots at the wrist (the paw's lower-right corner) and slams down. */}
         <div className="absolute inset-0 origin-[112.5px_211.5px] animate-cat-paw-bang motion-reduce:animate-none">
           <Layer src="/hero/window/cat.svg" style={{ clipPath: pawOnly }} />
         </div>
@@ -76,14 +67,12 @@ export function WindowScene() {
           </g>
         </svg>
 
-        {/* Speech bubble and glass streaks: in front of the cat, behind the laptop. */}
         <Layer src="/hero/window/glass.svg" />
 
         <div className="absolute inset-0 origin-[42.2%_70.72%] animate-laptop-jolt motion-reduce:animate-none">
           <Layer src="/hero/window/laptop.svg" />
         </div>
 
-        {/* Impact lines where the paw lands. */}
         <svg
           viewBox={VIEW_BOX}
           fill="none"
@@ -114,7 +103,6 @@ export function WindowScene() {
             }}
             className="absolute origin-[3.7px_1px] animate-lamp-sway motion-reduce:animate-none"
           >
-            {/* Warm light cone under the lens. */}
             <div
               style={{
                 left: LAMP.lens[0] - 22,
@@ -128,6 +116,7 @@ export function WindowScene() {
               alt=""
               width={LAMP.width}
               height={LAMP.height}
+              fetchPriority="low"
               className="relative max-w-none"
             />
           </div>

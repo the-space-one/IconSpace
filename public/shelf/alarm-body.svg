@@ -1,7 +1,1 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Group">
-<path id="Vector" d="M30 57.75C45.3259 57.75 57.75 45.3259 57.75 30C57.75 14.6741 45.3259 2.25 30 2.25C14.6741 2.25 2.25 14.6741 2.25 30C2.25 45.3259 14.6741 57.75 30 57.75Z" stroke="#0A0A0A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M30 30V18" stroke="#0A0A0A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_3" d="M30 30L37.501 37.501" stroke="#0A0A0A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" overflow="visible" preserveAspectRatio="none" style="display:block" viewBox="0 0 60 60"><g id="Group" stroke="#0a0a0a" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"><path id="Vector" d="M30 57.75a27.75 27.75 0 1 0 0-55.5 27.75 27.75 0 0 0 0 55.5"/><path id="Vector_2" d="M30 30V18"/><path id="Vector_3" d="m30 30 7.5 7.5"/></g></svg>

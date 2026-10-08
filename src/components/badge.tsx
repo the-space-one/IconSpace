@@ -3,15 +3,11 @@ import Image from "next/image";
 type BadgeDef = {
   id: string;
   name: string;
-  // Visits needed to unlock it.
   visits: number;
-  // The medal's line art and where it sits inside the 110×110 tile, as in
-  // Figma. Each medal is a different size, so the offsets differ slightly.
   art: { width: number; height: number; top: number; left: number };
 };
 
-// The medals get more ornate with each milestone.
-export const BADGES: BadgeDef[] = [
+const BADGES: BadgeDef[] = [
   {
     id: "spark",
     name: "First Spark",
@@ -38,9 +34,7 @@ export const BADGES: BadgeDef[] = [
   },
 ];
 
-// A visit-milestone badge: a cat medal in a recessed tile. Locked badges are
-// greyed out with a padlock.
-export function Badge({
+function Badge({
   badge,
   unlocked = true,
 }: {
@@ -56,7 +50,7 @@ export function Badge({
       role="img"
       aria-label={label}
       title={label}
-      className="group relative size-[110px] rounded-[26.84px] shadow-[inset_0px_0px_0px_1px_#e5e5e5,inset_0px_1px_3px_0px_rgba(0,0,0,0.16)]"
+      className="group relative size-27.5 rounded-tile shadow-tile"
     >
       <Image
         src={`/badges/${badge.id}.svg`}
@@ -72,7 +66,7 @@ export function Badge({
       />
 
       {!unlocked && (
-        <span className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2),inset_0_0_0_1px_#e5e5e5]">
+        <span className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full bg-background shadow-[0_1px_3px_rgba(0,0,0,0.2),inset_0_0_0_1px_var(--color-border)]">
           <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
             <rect x="3" y="7" width="10" height="7.5" rx="2" fill="#404040" />
             <path
@@ -88,8 +82,6 @@ export function Badge({
   );
 }
 
-// The full set, unlocked up to the visitor's visit count. Leave `visits` out
-// to show every badge unlocked.
 export function Badges({ visits = Infinity }: { visits?: number }) {
   return BADGES.map((badge) => (
     <Badge key={badge.id} badge={badge} unlocked={visits >= badge.visits} />

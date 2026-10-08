@@ -1,6 +1,1 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="SVG">
-<path id="Vector" d="M6.75 50.25C21.75 50.25 36.75 50.25 51.75 50.25C54.234 50.25 56.25 48.234 56.25 45.75C56.25 35.25 56.25 24.75 56.25 14.25C56.25 11.766 54.231 9.75 51.744 9.75C34.041 9.75 24.459 9.75 6.756 9.75C4.272 9.75 2.25 11.766 2.25 14.25C2.25 24.75 2.25 35.25 2.25 45.75C2.25 48.234 4.266 50.25 6.75 50.25Z" stroke="#0A0A0A" stroke-width="4.5"/>
-<path id="Vector_2" d="M5.25 9.75C5.25 9.75 23.202 26.151 26.202 27.651C29.202 29.151 29.202 29.151 32.001 27.651C34.797 26.151 52.806 9.75 52.806 9.75" stroke="#0A0A0A" stroke-width="4.5"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" overflow="visible" preserveAspectRatio="none" style="display:block" viewBox="0 0 60 60"><g id="SVG" stroke="#0a0a0a" stroke-width="4.5"><path id="Vector" d="M6.75 50.25h45a4.5 4.5 0 0 0 4.5-4.5v-31.5a4.5 4.5 0 0 0-4.5-4.5h-45a4.5 4.5 0 0 0-4.5 4.5v31.5a4.5 4.5 0 0 0 4.5 4.5Z"/><path id="Vector_2" d="M5.25 9.75s17.95 16.4 20.95 17.9 3 1.5 5.8 0 20.8-17.9 20.8-17.9"/></g></svg>
