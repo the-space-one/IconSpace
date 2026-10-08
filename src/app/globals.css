@@ -23,7 +23,7 @@
   --animate-forklift-rumble: forklift-rumble 240ms ease-out infinite;
   --animate-exhaust-puff: exhaust-puff 1.1s ease-out infinite;
 
-  /* Drives the full floor between the two shelves (846px), turning around at
+  /* Drives from beside the signpost to the right-hand shelf (648px), turning at
      each end by flipping horizontally so it always faces where it's going. */
   @keyframes forklift-drive {
     0%,
@@ -31,11 +31,11 @@
       transform: translateX(0) scaleX(1);
     }
     44% {
-      transform: translateX(846px) scaleX(1);
+      transform: translateX(648px) scaleX(1);
     }
     50%,
     56% {
-      transform: translateX(846px) scaleX(-1);
+      transform: translateX(648px) scaleX(-1);
     }
     94% {
       transform: translateX(0) scaleX(-1);
