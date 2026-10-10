@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section className="@container w-full overflow-x-clip">
       <div style={scale} className="relative mb-[calc(-190px*var(--s))]">
-        <div className="relative z-10 flex flex-col items-center px-4 lg:absolute lg:top-0 lg:left-[calc(-8.43px*var(--s))] lg:block lg:h-[675px] lg:w-[1579px] lg:origin-top-left lg:scale-(--s) lg:px-0">
+        <div className="relative z-10 flex flex-col items-center px-4 lg:absolute lg:top-0 lg:left-[calc(-8.43px*var(--s))] lg:pointer-events-none lg:block lg:h-[675px] lg:w-[1579px] lg:origin-top-left lg:scale-(--s) lg:px-0 lg:*:pointer-events-auto">
           <h1 className="w-[6.775em] text-center font-makenfy text-[clamp(2.25rem,11vw,5rem)] leading-none text-foreground lg:absolute lg:top-0 lg:left-[496.43px] lg:text-[80px]">
             Premium animated Icons
           </h1>

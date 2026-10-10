@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { IconBubble } from "@/components/icon-bubble";
 
 const VIEW_BOX = "1381.5 369.5 143.5 304";
 
@@ -13,6 +14,8 @@ const LAMP = {
   height: 25.8295,
   lens: [12.6, 21.5],
 };
+// The lens faces down and to the right, so each light cone is tipped to match:
+// its chord in lamp.svg runs (6.5, 24.04) → (18.68, 16.83), 30.6° off level.
 const LAMPS = [
   { left: 30.5, top: 14.5, delay: "-0.4s" },
   { left: 69.5, top: 13.5, delay: "-1.3s" },
@@ -69,6 +72,8 @@ export function WindowScene() {
 
         <Layer src="/hero/window/glass.svg" />
 
+        <IconBubble />
+
         <div className="absolute inset-0 origin-[42.2%_70.72%] animate-laptop-jolt motion-reduce:animate-none">
           <Layer src="/hero/window/laptop.svg" />
         </div>
@@ -109,7 +114,7 @@ export function WindowScene() {
                 top: LAMP.lens[1] - 1,
                 animationDelay: lamp.delay,
               }}
-              className="absolute h-[70px] w-[44px] animate-lamp-glow bg-[linear-gradient(to_bottom,rgba(255,210,90,0.35),rgba(255,210,90,0))] mix-blend-multiply [clip-path:polygon(38.6%_0,61.4%_0,100%_100%,0_100%)] motion-reduce:animate-none"
+              className="absolute h-[70px] w-[44px] origin-top -rotate-[30.6deg] animate-lamp-glow bg-[linear-gradient(to_bottom,rgba(255,210,90,0.35),rgba(255,210,90,0))] mix-blend-multiply [clip-path:polygon(38.6%_0,61.4%_0,100%_100%,0_100%)] motion-reduce:animate-none"
             />
             <Image
               src={LAMP.src}
