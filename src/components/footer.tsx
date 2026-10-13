@@ -1,10 +1,60 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Badges } from "@/components/badge";
+import { Forklift } from "@/components/forklift";
+import { BadgeMotion } from "@/components/badge-motion";
 
-const scale = {
-  "--s": "tan(atan2(100cqw, 1512px))",
+// The scene's scale. Below xl it fits the 1512-wide scene to the viewport but
+// never drops under 0.55× (phones get a crop instead of a speck). From xl it
+// follows the hero art at 0.72 of its scale, like the icon shelves, so the
+// footer stays in proportion with the page above it instead of filling the
+// width. The ground is its own full-bleed band, so a narrower scene never
+// leaves it short of the edges.
+const SCALE =
+  "[--s:max(tan(atan2(100cqw,1512px)),min(tan(atan2(100cqw,780px)),0.55))] xl:[--s:calc(0.72*min(1.2,tan(atan2(100cqw,1512px))))] xl:[--edge:calc((100cqw_-_1512px*var(--s))_/_(2*var(--s)))]";
+
+// Centres the scene; when it's wider than the viewport, keeps x=656 in the
+// middle so the signpost and all four badges stay in frame.
+const sceneLeft = {
+  left: "max((100% - 1512px * var(--s)) / 2, min(0px, max(100% - 1512px * var(--s), 50% - 656px * var(--s))))",
 } as CSSProperties;
+
+/* Ground, redrawn from the shelves art as repeating bands so it can run edge to
+ * edge: a cross-hatched grass band over two hatched soil bands, 4px strokes,
+ * hatch every 10.5 units at the original 19:28.5 slant. Scene units (y = 416
+ * is the floor line the shelves, signpost and forklift stand on). */
+const HATCH = { gap: 10.5, run: 19, depth: 28.5 };
+const BANDS = [
+  { y: 416, lean: "back", color: "#73bb3a" },
+  { y: 418, lean: "forward", color: "#73bb3a" },
+  { y: 448, lean: "back", color: "#563724" },
+  { y: 478, lean: "forward", color: "#563724" },
+] as const;
+
+function Ground() {
+  return (
+    <svg aria-hidden className="pointer-events-none absolute inset-0 size-full">
+      <defs>
+        {BANDS.map((band, index) => (
+          <pattern key={index} id={`ground-${index}`} patternUnits="userSpaceOnUse"
+            y={band.y} width={HATCH.gap} height={HATCH.depth}>
+            {[-3, -2, -1, 0, 1, 2, 3].map((k) => {
+              const x = k * HATCH.gap;
+              const dx = band.lean === "forward" ? -HATCH.run : HATCH.run;
+              return <path key={k} d={`M${x} 0l${dx} ${HATCH.depth}`} stroke={band.color} strokeWidth={4} />;
+            })}
+          </pattern>
+        ))}
+      </defs>
+      <g style={{ transform: "scale(var(--s))" }}>
+        {BANDS.map((band, index) => (
+          <rect key={index} x={-50} y={band.y} width={20000} height={HATCH.depth}
+            fill={`url(#ground-${index})`} stroke={band.color} strokeWidth={4} />
+        ))}
+      </g>
+    </svg>
+  );
+}
 
 const EXHAUST_DELAYS = ["0ms", "370ms", "730ms"];
 
@@ -18,13 +68,6 @@ const SIGNPOST_CAT: Cat = {
   eyes: [
     { fill: "#000", d: "M84.36 15.45c3.03.02 3.29 4.98.7 6.2-3.16-.05-3.18-4.98-.7-6.2" },
     { fill: "#000", d: "M71.53 15.56c2.89-.09 3.25 5.02.63 6.1-2.93-.06-3.18-4.86-.63-6.1" },
-  ],
-};
-const FORKLIFT_CAT: Cat = {
-  delay: "-2.4s",
-  eyes: [
-    { fill: "#727af7", d: "M47.83 29.01c2.2-1.56 4.17 6.94.96 5.95-2.05-1.44-2.19-3.9-.96-5.95" },
-    { fill: "#6a72f6", d: "M58.14 26.9c2.36 0 3.36 5.55 1.97 6.06-3-.51-3.37-3.86-1.97-6.06" },
   ],
 };
 const SHELF_CATS: Cat[] = [
@@ -63,66 +106,110 @@ function Eyes({ viewBox, cats, className }: { viewBox: string; cats: Cat[]; clas
   );
 }
 
+/** The signpost, in scene units: it stands just right of the left shelf. */
+function SignpostArt() {
+  return (
+    <>
+      <Image
+        src="/footer/signpost.svg"
+        alt=""
+        // 1.25x the Figma size, still standing on the floor.
+        width={203.314}
+        height={260.53}
+        className="absolute top-[154.87px] left-[280px] max-w-none"
+      />
+      <Eyes
+        viewBox="0 0 162.65 208.42"
+        cats={[SIGNPOST_CAT]}
+        className="absolute top-[154.87px] left-[280px] h-[260.53px] w-[203.314px]"
+      />
+    </>
+  );
+}
+
+/** Both storage shelves, in scene units. Their outer sides are drawn open,
+ * because they're meant to run off the screen edge. */
+function ShelvesArt() {
+  return (
+    <>
+      <Image
+        src="/footer/shelves.svg"
+        alt=""
+        width={1895}
+        height={553}
+        // The footer's largest image, so it's the LCP when a page opens at the
+        // footer (scroll restore, #anchors). Eager but low priority: it starts
+        // at once without competing with the hero art above it.
+        loading="eager"
+        fetchPriority="low"
+        className="absolute top-[84px] left-[-190.53px] max-w-none"
+      />
+      <Eyes
+        viewBox="0 0 1895.15 553"
+        cats={SHELF_CATS}
+        className="absolute top-[84px] left-[-190.53px] h-[553px] w-[1895.15px]"
+      />
+    </>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="@container w-full overflow-clip">
-      <div
-        style={scale}
-        className="mx-auto h-[calc(508px*var(--s))] w-[calc(1512px*var(--s))]"
-      >
-        <div className="relative h-[508px] w-[1512px] origin-top-left scale-(--s)">
-          <Image
-            src="/footer/signpost.svg"
-            alt=""
-            // 1.25x the Figma size, still standing on the floor.
-            width={203.314}
-            height={260.53}
-            className="absolute top-[154.87px] left-[280px] max-w-none"
-          />
-          <Eyes
-            viewBox="0 0 162.65 208.42"
-            cats={[SIGNPOST_CAT]}
-            className="absolute top-[154.87px] left-[280px] h-[260.53px] w-[203.314px]"
-          />
-
-          <Image
-            src="/footer/shelves.svg"
-            alt=""
-            width={1895.15}
-            height={553}
-            className="absolute top-[84px] left-[-190.53px] max-w-none"
-          />
-          <Eyes
-            viewBox="0 0 1895.15 553"
-            cats={SHELF_CATS}
-            className="absolute top-[84px] left-[-190.53px] h-[553px] w-[1895.15px]"
-          />
-
-          <div className="absolute top-[277.65px] left-[496px] animate-forklift-drive motion-reduce:animate-none">
-            {EXHAUST_DELAYS.map((delay) => (
-              <span
-                key={delay}
-                style={{ animationDelay: delay }}
-                className="absolute top-[84px] left-[6px] size-[14px] animate-exhaust-puff rounded-full border-2 border-[#a2a7fa] bg-[#eef0fe] opacity-0 motion-reduce:hidden"
-              />
-            ))}
-            {/* the driver's eyes ride the rumble with the forklift */}
-            <div className="relative origin-bottom animate-forklift-rumble motion-reduce:animate-none">
-              <Image
-                src="/footer/forklift.svg"
-                alt=""
-                // Drawn at 1.5x the Figma size so it reads closer in scale to the
-                // shelf boxes. It still rests on the floor line at y≈416.
-                width={192.234}
-                height={138.296}
-                className="block max-w-none"
-              />
-              <Eyes viewBox="0 0 128.16 92.2" cats={[FORKLIFT_CAT]} className="absolute inset-0 size-full" />
+      <div className={`relative h-[calc(508px*var(--s))] ${SCALE}`}>
+        <Ground />
+        <div
+          style={sceneLeft}
+          className="relative h-full w-[calc(1512px*var(--s))]"
+        >
+          <div className="relative h-[508px] w-[1512px] origin-top-left scale-(--s)">
+            {/* From xl the signpost rides with the left shelf (below). */}
+            <div className="xl:hidden">
+              <SignpostArt />
             </div>
-          </div>
 
-          <div className="absolute top-0 left-[488px] flex gap-8">
-            <Badges />
+            {/* From xl the shelves pin to the screen edges instead (below). */}
+            <div className="xl:hidden">
+              <ShelvesArt />
+            </div>
+
+            {/* From xl the signpost and shelves sit out at the screen edges,
+                --edge (scene units) away from the scene. The forklift parks
+                that much further left, beside the signpost, and drives that
+                much further right, to the shelf. */}
+            <div className="absolute top-[277.65px] left-[496px] animate-forklift-drive motion-reduce:animate-none xl:left-[calc(496px_-_var(--edge))] xl:[--drive:calc(552px_+_2*var(--edge))]">
+              {EXHAUST_DELAYS.map((delay) => (
+                <span
+                  key={delay}
+                  style={{ animationDelay: delay }}
+                  className="absolute top-[84px] left-[6px] size-[14px] animate-exhaust-puff rounded-full border-2 border-[#a2a7fa] bg-[#eef0fe] opacity-0 motion-reduce:hidden"
+                />
+              ))}
+              {/* pitch on starts and stops, from the wheels */}
+              <div className="origin-bottom animate-forklift-pitch motion-reduce:animate-none">
+                {/* engine rumble; the parts animate inside <Forklift> */}
+                <div className="relative origin-bottom animate-forklift-rumble motion-reduce:animate-none">
+                  <Forklift />
+                </div>
+              </div>
+            </div>
+
+            <BadgeMotion className="absolute top-0 left-[488px] flex gap-8">
+              <Badges />
+            </BadgeMotion>
+          </div>
+        </div>
+        {/* Each shelf keeps its open side on its own screen edge; the signpost
+            stays beside the left one. */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[calc(756px*var(--s))] overflow-hidden xl:block">
+          <div className="relative h-[508px] w-[1512px] origin-top-left scale-(--s)">
+            <SignpostArt />
+            <ShelvesArt />
+          </div>
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[calc(756px*var(--s))] overflow-hidden xl:block">
+          <div className="absolute top-0 right-0 h-[508px] w-[1512px] origin-top-right scale-(--s)">
+            <ShelvesArt />
           </div>
         </div>
       </div>

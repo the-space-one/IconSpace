@@ -11,6 +11,8 @@
   --brand-outline: #9fa1ff;
   --brand-surface: #ebebff;
   --brand-foreground: #000000;
+  /* Paper fill for icons that draw a page (iconspace-lab's book). */
+  --icon-paper: #ffffff;
 }
 
 @theme inline {
@@ -34,32 +36,305 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 
   --animate-forklift-drive: forklift-drive 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  --animate-forklift-pitch: forklift-pitch 24s ease-in-out infinite;
+  --animate-forklift-roll: forklift-roll 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  --animate-forklift-lift: forklift-lift 24s ease-in-out infinite;
+  --animate-forklift-mastfoot: forklift-mastfoot 24s ease-out infinite;
+  --animate-forklift-cargo: forklift-cargo 24s ease-in-out infinite;
+  --animate-forklift-driver: forklift-driver 24s ease-in-out infinite;
+  --animate-forklift-gaze: forklift-gaze 24s ease-in-out infinite;
+  --animate-forklift-speed: forklift-speed 24s ease-out infinite;
+  --animate-forklift-beep: forklift-beep 24s ease-out infinite;
   --animate-forklift-rumble: forklift-rumble 240ms ease-out infinite;
   --animate-exhaust-puff: exhaust-puff 1.1s ease-out infinite;
 
-  /* Drives to the right-hand shelf and back at an unhurried pace (9s each
-     way). At each end it stops for a beat, then snaps around in 160ms by
-     flipping horizontally so it always faces where it's going. */
+  /* ── FORKLIFT STORYBOARD (24s loop; layers: travel → pitch → rumble) ──
+       0.0s   parked beside the signpost (both screen sizes)
+       1.0s   pulls away: nose lifts, stack presses into the backrest,
+              lug-nut hubs roll, speed lines in → drives forward 9s
+      10.0s   brakes at the shelf: nose dips and rebounds, stack shears
+              forward and springs back, driver leans in
+      10.6s   forks lift 16 units up the mast (0.7s)
+      11.3s   holds the stack up; driver hops twice
+      12.3s   forks lower (0.6s), stack settles
+      13.0s   reverses: nose dips, driver looks back over the shoulder,
+              reverse beeper pulses         → backs up 9s
+      22.0s   stops: nose lifts and settles, eyes back on the road
+     22–24s   holds
+     It always faces the shelf and backs away rather than turning round, so
+     nothing ever mirrors. --drive is the distance to that shelf (552px in the
+     scene; the footer stretches it when the shelf sits at the screen edge). */
   @keyframes forklift-drive {
     0%,
     4% {
-      transform: translateX(0) scaleX(1);
+      transform: translateX(0);
     }
     41.5%,
-    43% {
-      transform: translateX(552px) scaleX(1);
-    }
-    43.67%,
     54% {
-      transform: translateX(552px) scaleX(-1);
+      transform: translateX(var(--drive, 552px));
     }
     91.5%,
-    93% {
-      transform: translateX(0) scaleX(-1);
-    }
-    93.67%,
     100% {
-      transform: translateX(0) scaleX(1);
+      transform: translateX(0);
+    }
+  }
+
+  /* Body pitch from the wheels on every start and stop; positive dips the
+     nose (the forks). Accelerating lifts it, braking dips it with a small
+     rebound, and pulling away in reverse tips it forward. */
+  @keyframes forklift-pitch {
+    0%,
+    4%,
+    8%,
+    41.5%,
+    44.5%,
+    54%,
+    57.5%,
+    91.5%,
+    94.5%,
+    100% {
+      transform: rotate(0deg);
+    }
+    5.5% {
+      transform: rotate(-1.2deg);
+    }
+    42.3% {
+      transform: rotate(1.6deg);
+    }
+    43.2% {
+      transform: rotate(-0.5deg);
+    }
+    55.3% {
+      transform: rotate(1deg);
+    }
+    92.3% {
+      transform: rotate(-1.2deg);
+    }
+    93.2% {
+      transform: rotate(0.4deg);
+    }
+  }
+
+  /* Wheel hubs roll exactly as far as the forklift travels: the same stops
+     and curve as forklift-drive, angle = distance / 15px radius (--roll). */
+  @keyframes forklift-roll {
+    0%,
+    4% {
+      transform: rotate(0);
+    }
+    41.5%,
+    54% {
+      transform: rotate(var(--roll, 2108deg));
+    }
+    91.5%,
+    100% {
+      transform: rotate(0);
+    }
+  }
+
+  /* The carriage rides the fixed mast: up 16 units, a beat on display, down.
+     10.56s → 11.26s up, held to 12.29s, down by 12.84s. */
+  @keyframes forklift-lift {
+    0%,
+    44%,
+    53.5%,
+    100% {
+      transform: translateY(0);
+    }
+    44% {
+      animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    46.9%,
+    51.2% {
+      transform: translateY(-16px);
+    }
+  }
+
+  /* The mast's foot shows its closing edge only while the tine is up. */
+  @keyframes forklift-mastfoot {
+    0%,
+    44.2%,
+    53.3%,
+    100% {
+      opacity: 0;
+    }
+    44.6%,
+    52.9% {
+      opacity: 1;
+    }
+  }
+
+  /* The stack's inertia, sheared from its base. A load can only tip away
+     from the mast (braking, pulling away in reverse); when it's pushed into
+     the backrest (accelerating, stopping in reverse) it just presses down. */
+  @keyframes forklift-cargo {
+    0%,
+    4%,
+    8%,
+    41.5%,
+    44.5%,
+    53.4%,
+    54%,
+    57.5%,
+    91.5%,
+    94%,
+    100% {
+      transform: skewX(0) scaleY(1);
+    }
+    5.5% {
+      transform: skewX(0) scaleY(0.98);
+    }
+    42.3% {
+      transform: skewX(-4deg) scaleY(1);
+    }
+    43.1% {
+      transform: skewX(0) scaleY(1);
+    }
+    43.8% {
+      transform: skewX(-1.2deg) scaleY(1);
+    }
+    53.7% {
+      transform: skewX(0) scaleY(0.985);
+    }
+    55.3% {
+      transform: skewX(-2.5deg) scaleY(1);
+    }
+    92.3% {
+      transform: skewX(0) scaleY(0.985);
+    }
+  }
+
+  /* The driver leans into the brake, then hops twice while the stack is up
+     (stretch on the way up, squash on landing). */
+  @keyframes forklift-driver {
+    0%,
+    41.5%,
+    43.6%,
+    47.1%,
+    50.4%,
+    100% {
+      transform: none;
+    }
+    42.3% {
+      transform: translateX(1px);
+    }
+    47.9%,
+    49.5% {
+      transform: translateY(-1.4px) scale(0.98, 1.04);
+    }
+    48.7%,
+    50% {
+      transform: scale(1.03, 0.96);
+    }
+  }
+
+  /* Eyes over the shoulder while backing up. */
+  @keyframes forklift-gaze {
+    0%,
+    54%,
+    92%,
+    100% {
+      transform: none;
+    }
+    55.5%,
+    90.5% {
+      transform: translateX(-1.6px);
+    }
+  }
+
+  /* Speed lines while driving forward only. */
+  @keyframes forklift-speed {
+    0%,
+    4.5%,
+    40.5%,
+    100% {
+      opacity: 0;
+    }
+    7%,
+    37% {
+      opacity: 1;
+    }
+  }
+
+  /* Reverse beeper: one pulse a second while backing up. */
+  @keyframes forklift-beep {
+    0%,
+    54.59%, 58.76%, 62.93%, 67.10%, 71.27%, 75.44%, 79.61%, 83.78%, 87.95%,
+    100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    54.60% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    56.20% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    58.77% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    60.37% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    62.94% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    64.54% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    67.11% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    68.71% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    71.28% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    72.88% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    75.45% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    77.05% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    79.62% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    81.22% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    83.79% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    85.39% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+    87.96% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    89.56% {
+      opacity: 0;
+      transform: scale(1.2);
     }
   }
 
@@ -214,4 +489,328 @@ body {
       opacity: 0.5;
     }
   }
+}
+
+/* Hero shop. Timings line up with the storyboard in shop-scene.tsx; every
+   keyframe set rests on `transform: none` so the art's pose is the base. */
+@theme {
+  --animate-shop-hop: shop-hop 6s infinite;
+  --animate-shop-stool: shop-stool 6s ease-out infinite;
+  --animate-shop-cheer: shop-cheer 6s ease-out infinite;
+  --animate-shop-wave: shop-wave 6s ease-in-out infinite;
+  --animate-shop-tail: shop-tail 6s ease-in-out infinite;
+  --animate-shop-basket: shop-basket 6s ease-in-out infinite;
+  --animate-shop-breathe: shop-breathe 1.8s ease-in-out infinite alternate;
+  --animate-shop-sign: shop-sign 3.2s var(--ease-in-out) infinite alternate;
+  --animate-shop-board: shop-board 8s infinite;
+  --animate-shop-sway: shop-sway 3s ease-in-out infinite alternate;
+  --animate-grass-gust: grass-gust 5s ease-in-out infinite;
+  --animate-snippet-in: snippet-in 180ms ease-out;
+  --animate-shop-glint: shop-glint 9s var(--ease-in-out) 1.5s infinite;
+
+  /* Crouch, launch, stretch at the apex, fall under gravity, squash on
+     landing; the second hop is smaller. */
+  @keyframes shop-hop {
+    0%,
+    32%,
+    100% {
+      transform: none;
+      animation-timing-function: ease-in-out;
+    }
+    5% {
+      transform: scale(1.05, 0.93);
+      animation-timing-function: cubic-bezier(0, 0.31, 0.18, 0.99);
+    }
+    10% {
+      transform: translateY(-6px) scale(0.96, 1.06);
+      animation-timing-function: cubic-bezier(0.74, 0.03, 1, 1);
+    }
+    15% {
+      transform: scale(1.06, 0.92);
+      animation-timing-function: ease-out;
+    }
+    18% {
+      transform: scale(1.02, 0.97);
+      animation-timing-function: cubic-bezier(0, 0.31, 0.18, 0.99);
+    }
+    22% {
+      transform: translateY(-4px) scale(0.97, 1.04);
+      animation-timing-function: cubic-bezier(0.74, 0.03, 1, 1);
+    }
+    27% {
+      transform: scale(1.04, 0.95);
+      animation-timing-function: ease-out;
+    }
+  }
+
+  @keyframes shop-stool {
+    0%,
+    8%,
+    18%,
+    30%,
+    100% {
+      transform: none;
+    }
+    5% {
+      transform: scaleY(0.98);
+    }
+    15% {
+      transform: scale(1.01, 0.96);
+    }
+    27% {
+      transform: scaleY(0.975);
+    }
+  }
+
+  /* The lines are part of the art, so they rest visible and burst at each
+     apex. */
+  @keyframes shop-cheer {
+    0%,
+    13%,
+    25%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+    7%,
+    19% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    10%,
+    22% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes shop-wave {
+    0%,
+    20%,
+    48%,
+    100% {
+      transform: none;
+    }
+    24.5%,
+    33.5% {
+      transform: rotate(-7deg);
+    }
+    29%,
+    38% {
+      transform: rotate(2deg);
+    }
+    42.5% {
+      transform: rotate(-5deg);
+    }
+  }
+
+  @keyframes shop-tail {
+    0%,
+    33%,
+    55%,
+    100% {
+      transform: none;
+    }
+    37.5% {
+      transform: rotate(7deg);
+    }
+    42% {
+      transform: rotate(-5deg);
+    }
+    46.5% {
+      transform: rotate(5deg);
+    }
+    51% {
+      transform: rotate(-2deg);
+    }
+  }
+
+  /* Follows the tail a beat late, damping out. */
+  @keyframes shop-basket {
+    0%,
+    35%,
+    58%,
+    100% {
+      transform: none;
+    }
+    39.5% {
+      transform: rotate(4deg);
+    }
+    44% {
+      transform: rotate(-3deg);
+    }
+    48.5% {
+      transform: rotate(1.8deg);
+    }
+    53% {
+      transform: rotate(-0.6deg);
+    }
+  }
+
+  @keyframes shop-breathe {
+    from {
+      transform: none;
+    }
+    to {
+      transform: scale(0.995, 1.015);
+    }
+  }
+
+  @keyframes shop-sign {
+    from {
+      transform: rotate(-2.5deg);
+    }
+    to {
+      transform: rotate(2.5deg);
+    }
+  }
+
+  /* Rests most of the loop, then tips onto its front foot and thunks back. */
+  @keyframes shop-board {
+    0%,
+    86%,
+    100% {
+      transform: none;
+      animation-timing-function: cubic-bezier(0, 0.31, 0.18, 0.99);
+    }
+    89% {
+      transform: rotate(2.5deg);
+      animation-timing-function: cubic-bezier(0.74, 0.03, 1, 1);
+    }
+    92% {
+      transform: none;
+      animation-timing-function: ease-out;
+    }
+    94% {
+      transform: rotate(0.8deg);
+      animation-timing-function: cubic-bezier(0.74, 0.03, 1, 1);
+    }
+    96% {
+      transform: none;
+    }
+  }
+
+  @keyframes shop-sway {
+    from {
+      transform: rotate(-3deg);
+    }
+    to {
+      transform: rotate(3deg);
+    }
+  }
+
+  /* A gust: a quick lean from the root, a damped back-swing, then stillness
+     until the next one. Tufts share the timing and are delayed by x. */
+  @keyframes grass-gust {
+    0%,
+    48%,
+    100% {
+      transform: none;
+    }
+    12% {
+      transform: rotate(4deg) skewX(2deg);
+    }
+    24% {
+      transform: rotate(-1.5deg);
+    }
+    36% {
+      transform: rotate(0.8deg);
+    }
+  }
+
+  @keyframes snippet-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+      filter: blur(2px);
+    }
+  }
+
+  @keyframes shop-glint {
+    0% {
+      transform: none;
+    }
+    18%,
+    100% {
+      transform: translateX(300px);
+    }
+  }
+}
+
+/* ── Navbar cats, ported 1:1 from Icon-Waitlist (src/app/globals.css) ─────── */
+
+/* Header character: explicit parts, one motion owner per wrapper. */
+.curious-cat__pose {
+  transform-box: view-box;
+  transform-origin: 105px 170px;
+  transform: translate(0px, 0px) rotate(0deg) scale(1, 1);
+}
+.curious-cat__ear {
+  transform-box: view-box;
+  transform: rotate(0deg);
+}
+.curious-cat__ear--left { transform-origin: 47px 66px; }
+.curious-cat__ear--right { transform-origin: 165px 66px; }
+.curious-cat__gaze-pose { transform: translate(0px, 0px); }
+.curious-cat__eye {
+  transform-box: view-box;
+  transform: scaleY(1);
+}
+
+/* Full peek is the first-paint/base pose, independent of JS or hover.
+   Source cut edge x=.82 in a 25-unit-tall drawing; here it renders at the
+   navbar's 24.25px (the waitlist used 36px): .82 * 24.25/25 = 0.8px. Place
+   that edge 2px under the button. */
+.cta-cat-anchor {
+  left: calc(100% - 2.8px);
+  transform: translateY(-50%);
+}
+.cta-cat__head {
+  transform-box: view-box;
+  transform-origin: 0.82px 21px;
+  transform: rotate(0deg);
+  transition: transform 180ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.cta-cat__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cta__visual {
+  transform: scale(1);
+  transition: transform 120ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+/* Button and anchored cat press together; the outer hover target stays fixed.
+   The waitlist's CTA is a <button> keyed on :enabled; "On github" is a link,
+   which never matches :enabled, so it keys on plain :hover / :active. */
+.cta:has(.cta__button:active) .cta__visual { transform: scale(0.98); }
+.cta .cta__button:active { translate: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover .cta-cat__head {
+    transform: rotate(2deg);
+    transition-duration: 220ms;
+  }
+  /* One small reaction after the lean, not a repeating idle. */
+  .cta:hover .cta-cat__eye {
+    animation: cta-cat-blink 180ms ease-in-out 220ms;
+  }
+}
+.cta:has(.cta__button:focus-visible) .cta-cat__head {
+  transform: rotate(2deg);
+  transition: none;
+}
+.cta:has(.cta__button:focus-visible) .cta-cat__eye { animation: none; }
+.cta:has(.cta__button:focus-visible) .cta__visual { transition: none; }
+
+@keyframes cta-cat-blink {
+  0%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(0.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta .cta-cat__head, .cta .cta__visual {
+    transform: none;
+    transition: none;
+  }
+  .cta .cta-cat__eye { animation: none; }
+  .cta .cta__button { transition: none; }
 }
