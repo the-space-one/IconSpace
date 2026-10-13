@@ -1,9 +1,17 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
+import { PARTS, VIEWBOX } from "./badge-parts";
+import styles from "./badge-motion.module.css";
 
 type BadgeDef = {
   id: string;
   name: string;
   visits: number;
+  /** Length of one run (intro or hover), ms: the longest storyboard layer. */
+  duration: number;
+  /** Has a generated rig in badge-rigs/ (scripts/rig-badges.mjs). */
+  rig?: boolean;
+  shine?: boolean;
   art: { width: number; height: number; top: number; left: number };
 };
 
@@ -12,24 +20,31 @@ const BADGES: BadgeDef[] = [
     id: "spark",
     name: "First Spark",
     visits: 1,
+    duration: 1400,
+    rig: true,
     art: { width: 74.8361, height: 87.436, top: 12, left: 18 },
   },
   {
     id: "regular",
     name: "Regular",
     visits: 5,
+    duration: 900,
     art: { width: 77.261, height: 86.5629, top: 14, left: 16 },
   },
   {
     id: "loyal",
     name: "Loyal",
     visits: 15,
+    duration: 1000,
+    shine: true,
     art: { width: 82.5206, height: 88.2607, top: 14, left: 14 },
   },
   {
     id: "legend",
     name: "Legend",
     visits: 30,
+    duration: 1250,
+    shine: true,
     art: { width: 80.6877, height: 89.7798, top: 12, left: 15 },
   },
 ];
@@ -50,20 +65,27 @@ function Badge({
       role="img"
       aria-label={label}
       title={label}
-      className="group relative size-27.5 rounded-tile shadow-tile"
+      data-badge={unlocked ? badge.id : undefined}
+      data-duration={unlocked ? badge.duration : undefined}
+      className={`relative size-27.5 rounded-tile shadow-tile ${styles.tile}`}
     >
-      <Image
-        src={`/badges/${badge.id}.svg`}
-        alt=""
-        width={badge.art.width}
-        height={badge.art.height}
-        style={{ top: badge.art.top, left: badge.art.left }}
-        className={`absolute max-w-none ${
-          unlocked
-            ? "transition-[translate] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-safe:group-hover:-translate-y-1.5"
-            : "opacity-50 grayscale"
-        }`}
-      />
+      <div className={styles.frame}>
+        <div style={badge.art} className={styles.lift}>
+          <div className={styles.swing}>
+            <div className={styles.hop}>
+              <Image
+                src={`/badges/${badge.id}.svg`}
+                alt=""
+                width={badge.art.width}
+                height={badge.art.height}
+                className={`block max-w-none ${unlocked ? "" : "opacity-50 grayscale"}`}
+              />
+              {unlocked && (badge.rig ? <div data-rig-slot className={styles.slot} /> : <Parts badge={badge} />)}
+              {unlocked && badge.shine && <Shine id={badge.id} />}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {!unlocked && (
         <span className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full bg-background shadow-[0_1px_3px_rgba(0,0,0,0.2),inset_0_0_0_1px_var(--color-border)]">
@@ -79,6 +101,43 @@ function Badge({
         </span>
       )}
     </div>
+  );
+}
+
+/** v1 details for badges without a rig yet, drawn over the art on its own viewBox. */
+function Parts({ badge }: { badge: BadgeDef }) {
+  const parts = PARTS[badge.id];
+  return (
+    <svg
+      viewBox={VIEWBOX[badge.id]}
+      preserveAspectRatio="none"
+      aria-hidden
+      className={styles.parts}
+    >
+      <g fill="#fff" stroke="#fff" strokeWidth={0.5}>
+        {parts.flatMap((part) => part.paths.map(([, d]) => <path key={d} d={d} />))}
+      </g>
+      {parts.map((part) => (
+        <g
+          key={part.paths[0][1]}
+          style={{ "--at": `${part.at}ms` } as CSSProperties}
+          className={`${styles.part} ${styles[part.motion]}`}
+        >
+          {part.paths.map(([fill, d]) => (
+            <path key={d} d={d} fill={fill} />
+          ))}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/** A glint swept across the badge, masked to its silhouette. */
+function Shine({ id }: { id: string }) {
+  return (
+    <span aria-hidden style={{ maskImage: `url(/badges/${id}.svg)` }} className={styles.shine}>
+      <span className={styles.band} />
+    </span>
   );
 }
 
