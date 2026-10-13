@@ -42,7 +42,9 @@ export default function RootLayout({
       lang="en"
       className={`${froundy.variable} ${makenfy.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

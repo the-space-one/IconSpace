@@ -27,11 +27,10 @@ function Layer({ src, style }: { src: string; style?: CSSProperties }) {
     <Image
       src={src}
       alt=""
-      width={143.5}
-      height={304}
+      fill
+      sizes="144px"
       style={style}
       fetchPriority="low"
-      className="absolute inset-0 max-w-none"
     />
   );
 }

@@ -1,61 +1,57 @@
-import Image from "next/image";
-import type { CSSProperties } from "react";
 import { HeavyFollow } from "@/components/heavy-follow";
 import { InstallCard } from "@/components/install-card";
+import { ShopBack, ShopFront } from "@/components/shop-scene";
 import { WindowScene } from "@/components/window-scene";
 
-const scale = {
-  "--s": "tan(atan2(100cqw, 1512px))",
-} as CSSProperties;
-
+/*
+ * Two layouts, split where the content stops fitting:
+ *
+ * < xl  Stacked. Copy in flow, then the shop as a centred island: art x 0–545
+ *       (the hedge isn't drawn past it — the card used to cover the middle),
+ *       y 70–430, both ends faded. Phones fit ~520 units so the cats stay
+ *       legible; larger screens stop at 1.1× and gain margin instead.
+ * ≥ xl  Overlay. The 460px card sits between the shop and the hedges, which
+ *       only clears the shop from ~1224px. The art scales with the viewport
+ *       up to 1.2× and then centres; the copy is pinned to art coordinates
+ *       but its text and card keep their real size.
+ *
+ * --s is the art's scale in both layouts. It's resolved against the section
+ * (the nearest container), so nothing reading it may sit in another container.
+ */
 const stage =
-  "absolute top-0 left-[calc(-8.43px*var(--s))] h-[675px] w-[1579px] origin-top-left scale-(--s)";
+  "absolute top-[calc(-70px*var(--s))] left-[calc(50%-272px*var(--s))] h-[675px] w-[1579px] origin-top-left scale-(--s) [mask-image:linear-gradient(to_right,transparent,#000_2.5%,#000_31%,transparent_34.5%)] xl:top-0 xl:left-[calc(-8.43px*var(--s))] xl:[mask-image:none] min-[1815px]:[mask-image:linear-gradient(to_right,transparent,#000_2%,#000_98%,transparent)]";
 
 export function Hero() {
   return (
     <section className="@container w-full overflow-x-clip">
-      <div style={scale} className="relative mb-[calc(-190px*var(--s))]">
-        <div className="relative z-10 flex flex-col items-center px-4 lg:absolute lg:top-0 lg:left-[calc(-8.43px*var(--s))] lg:pointer-events-none lg:block lg:h-[675px] lg:w-[1579px] lg:origin-top-left lg:scale-(--s) lg:px-0 lg:*:pointer-events-auto">
-          <h1 className="w-[6.775em] text-center font-makenfy text-[clamp(2.25rem,11vw,5rem)] leading-none text-foreground lg:absolute lg:top-0 lg:left-[496.43px] lg:text-[80px]">
+      <div className="relative mx-auto [--s:min(1.1,tan(atan2(100cqw,520px)))] xl:mb-[calc(-190px*var(--s))] xl:w-[calc(1512px*var(--s))] xl:[--s:min(1.2,tan(atan2(100cqw,1512px)))]">
+        <div className="relative z-30 flex flex-col items-center px-4 xl:pointer-events-none xl:absolute xl:inset-x-0 xl:top-0 xl:px-0 xl:*:pointer-events-auto">
+          <h1 className="w-[6.775em] text-center font-makenfy text-[clamp(2.25rem,11vw,5rem)] leading-none text-foreground xl:text-[length:calc(80px*var(--s))]">
             Premium animated Icons
           </h1>
 
-          <p className="mt-6 max-w-[383px] text-center font-froundy text-lg text-muted-foreground lg:absolute lg:top-[184px] lg:left-[575.93px] lg:mt-0 lg:w-[383px] lg:max-w-none lg:whitespace-nowrap">
+          <p className="mt-6 max-w-[383px] text-center font-froundy text-lg text-muted-foreground xl:absolute xl:top-[calc(184px*var(--s))] xl:left-1/2 xl:mt-0 xl:max-w-none xl:-translate-x-1/2 xl:whitespace-nowrap">
             Fast, energetic motion that brings character
-            <br className="max-lg:hidden" /> and adds even more delight to every
+            <br className="max-xl:hidden" /> and adds even more delight to every
             interaction.
           </p>
 
-          <div className="mt-8 w-full max-w-[460px] lg:absolute lg:top-[272px] lg:left-[537.43px] lg:mt-0 lg:w-[460px]">
+          <div className="mt-8 w-full max-w-[460px] xl:absolute xl:top-[calc(272px*var(--s))] xl:left-1/2 xl:mt-0 xl:w-[460px] xl:-translate-x-1/2">
             <InstallCard />
           </div>
         </div>
 
-        <div className="relative h-[calc(675px*var(--s))]">
+        <div className="relative mt-4 h-[calc(360px*var(--s))] xl:mt-0 xl:h-[calc(675px*var(--s))]">
           <div className={stage}>
-            <Image
-              src="/hero/art-back.svg"
-              alt=""
-              width={1579}
-              height={675}
-              fetchPriority="high"
-              loading="eager"
-              className="absolute inset-0"
-            />
+            <ShopBack />
           </div>
 
           <div className={`${stage} pointer-events-none z-20`}>
-            <Image
-              src="/hero/art-front.svg"
-              alt=""
-              width={1579}
-              height={675}
-              loading="eager"
-              className="absolute inset-0"
-            />
+            <ShopFront />
           </div>
 
-          <HeavyFollow className="absolute top-[calc(369.5px*var(--s))] right-0 z-30 w-[calc(143.5px*var(--s))]">
+          {/* Below xl it would cover the full-width shelves, so it waits for the overlay layout. */}
+          <HeavyFollow className="absolute top-[calc(369.5px*var(--s))] right-0 z-30 hidden w-[calc(143.5px*var(--s))] xl:block">
             <WindowScene />
           </HeavyFollow>
         </div>
