@@ -109,7 +109,7 @@ function Segmented<T extends string>({
   }, [value, radius]);
 
   return (
-    <div ref={track} role="group" aria-label={label} className={`group/seg relative flex w-full p-1 @[31rem]:w-auto ${pill ? "rounded-full bg-surface shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]" : "rounded-[12px] bg-brand-surface"}`}>
+    <div ref={track} role="group" aria-label={label} className={`group/seg relative flex w-full p-1 @[31rem]:w-auto ${pill ? "rounded-full bg-[#efefef] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.04)]" : "rounded-[12px] bg-[#efefef]"}`}>
       {options.map((option) => (
         <button
           key={option}
