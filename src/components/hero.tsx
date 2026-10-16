@@ -36,7 +36,7 @@ export function Hero() {
             interaction.
           </p>
 
-          <div className="mt-8 w-full max-w-[460px] xl:absolute xl:top-[calc(272px*var(--s))] xl:left-1/2 xl:mt-0 xl:w-[460px] xl:-translate-x-1/2">
+          <div className="mt-8 w-full max-w-[520px] xl:absolute xl:top-[calc(272px*var(--s))] xl:left-1/2 xl:mt-0 xl:w-[520px] xl:-translate-x-1/2">
             <InstallCard />
           </div>
         </div>
