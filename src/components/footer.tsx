@@ -11,7 +11,7 @@ import { BadgeMotion } from "@/components/badge-motion";
 // width. The ground is its own full-bleed band, so a narrower scene never
 // leaves it short of the edges.
 const SCALE =
-  "[--s:max(tan(atan2(100cqw,1512px)),min(tan(atan2(100cqw,780px)),0.55))] xl:[--s:calc(0.72*min(1.2,tan(atan2(100cqw,1512px))))] xl:[--edge:calc((100cqw_-_1512px*var(--s))_/_(2*var(--s)))]";
+  "[--s:max(tan(atan2(100cqw,1512px)),min(tan(atan2(100cqw,780px)),0.55))] xl:[--s:calc(0.72*min(1.5,tan(atan2(100cqw,1512px))))] xl:[--edge:calc((100cqw_-_1512px*var(--s))_/_(2*var(--s)))]";
 
 // Centres the scene; when it's wider than the viewport, keeps x=656 in the
 // middle so the signpost and all four badges stay in frame.

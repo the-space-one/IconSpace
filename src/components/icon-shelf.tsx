@@ -17,12 +17,12 @@ const plankWidth = (count: number) => 23 + 155 * count;
 // Planks are sized against the hero art, not on their own, so the tiles keep
 // the illustration's proportions: a tile reads about as wide as the
 // shopkeeper's head. Stacked layout (< xl): fit the width, at most 0.75×.
-// Overlay layout (≥ xl): 0.66 of the hero's scale (min(1.2, W/1512)). Below a
+// Overlay layout (≥ xl): 0.66 of the hero's scale (min(1.5, W/1512)). Below a
 // 36rem container the eight tiles split into two planks of four, which keeps
 // them ≥ 54px on a 320px phone instead of ~34px. The scale is fixed to the
 // eight-tile width, so a shorter last shelf keeps the same tile size.
 const SCALE = {
-  long: "[--s:min(0.75,tan(atan2(100cqw,1263px)))] xl:[--s:calc(0.66*min(1.2,tan(atan2(100vw,1512px))))]",
+  long: "[--s:min(0.75,tan(atan2(100cqw,1263px)))] xl:[--s:calc(0.66*min(1.5,tan(atan2(100vw,1512px))))]",
   half: "[--s:min(0.75,tan(atan2(100cqw,643px)))]",
 };
 const tile = "relative flex size-30 items-center justify-center rounded-tile shadow-tile";
