@@ -328,7 +328,7 @@ const front = {
   shelfShadow: (
     <>
       <path fill="#eeeeee" d="M147.48 299c6.4.46 14.95 1 20.93 1.33.02 2.46.03 6.22 0 8.67-2.02-.33-6.13-.82-8.43-1.08a602 602 0 0 1-12.52-1.59c.2-1.28 1 0 0 0-.06-2.73 0-4.6.02-7.33"/>
-      <path fill="url(#shop-a)" d="m225.93 200.5-70-2v4.5c.43-.13 90.98 2.55 92.55 3l14.95.5v-4.92c-4-.08-10.03-.23-14.17-.29z"/>
+      <path fill="#eeeeee" d="m225.93 200.5-70-2v4.5c.43-.13 90.98 2.55 92.55 3l14.95.5v-4.92c-4-.08-10.03-.23-14.17-.29z"/>
     </>
   ),
   keeperOutline: (
@@ -358,8 +358,8 @@ const front = {
   ),
   shelfGradients: (
     <>
-      <path fill="url(#shop-b)" d="M328.55 208.83c-6.24.22-27.55 1.12-33.64 1.3a.5.5 0 0 0-.48.5v2.87a.5.5 0 0 0 .5.5h33.64a.5.5 0 0 0 .5-.5v-4.18a.5.5 0 0 0-.52-.5"/>
-      <path fill="url(#shop-c)" d="m328.43 242.02-33.52 1.1a.5.5 0 0 0-.48.5v3.07a.5.5 0 0 0 .5.5h33.6a.5.5 0 0 0 .5-.5l-.09-4.18a.5.5 0 0 0-.51-.5"/>
+      <path fill="#eeeeee" d="M328.55 208.83c-6.24.22-27.55 1.12-33.64 1.3a.5.5 0 0 0-.48.5v2.87a.5.5 0 0 0 .5.5h33.64a.5.5 0 0 0 .5-.5v-4.18a.5.5 0 0 0-.52-.5"/>
+      <path fill="#eeeeee" d="m328.43 242.02-33.52 1.1a.5.5 0 0 0-.48.5v3.07a.5.5 0 0 0 .5.5h33.6a.5.5 0 0 0 .5-.5l-.09-4.18a.5.5 0 0 0-.51-.5"/>
     </>
   ),
   tuftLeft: (
@@ -502,18 +502,6 @@ const front = {
   defs: (
     <>
       <defs>
-      <linearGradient id="shop-a" x1="125.43" x2="296.93" y1="202" y2="203.5" gradientUnits="userSpaceOnUse">
-      <stop stopColor="#eeeeee"/>
-      <stop offset="1" stopColor="#fff" stopOpacity=".6"/>
-      </linearGradient>
-      <linearGradient id="shop-b" x1="284.6" x2="339.86" y1="211.08" y2="211.32" gradientUnits="userSpaceOnUse">
-      <stop stopColor="#eeeeee"/>
-      <stop offset="1" stopColor="#fff" stopOpacity=".6"/>
-      </linearGradient>
-      <linearGradient id="shop-c" x1="284.6" x2="339.86" y1="244.27" y2="244.51" gradientUnits="userSpaceOnUse">
-      <stop stopColor="#eeeeee"/>
-      <stop offset="1" stopColor="#fff" stopOpacity=".6"/>
-      </linearGradient>
       <clipPath id="shop-d">
       <path fill="#fff" d="m158.56 167 23 .13-.13 24-23-.13z"/>
       </clipPath>

@@ -1,20 +1,6 @@
 import type { ReactNode } from "react";
 
 
-const fill = [
-  "radial-gradient(90% 120% at 12% 0%, rgba(124,216,251,0.34) 0%, rgba(124,216,251,0) 42%)",
-  "radial-gradient(90% 140% at 88% 0%, rgba(212,254,107,0.26) 0%, rgba(212,254,107,0) 48%)",
-  "linear-gradient(90deg, rgba(124,216,251,0.2), rgba(255,255,255,0.55) 24%, rgba(255,255,255,0.42) 52%, rgba(212,254,107,0.18) 78%, rgba(124,216,251,0.15))",
-  "linear-gradient(rgba(255,255,255,0.95) 0%, rgba(246,246,246,0.7) 36%, rgba(232,232,232,0.55) 76%, rgba(250,250,250,0.8) 100%)",
-].join(", ");
-
-const sheen = [
-  "radial-gradient(at 14% 62%, rgba(124,216,251,0.22) 0%, rgba(124,216,251,0) 18%)",
-  "radial-gradient(at 38% 50%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 16%)",
-  "radial-gradient(at 70% 56%, rgba(212,254,107,0.18) 0%, rgba(212,254,107,0) 20%)",
-  "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 17%, rgba(255,255,255,0) 28%, rgba(255,255,255,0.3) 52%, rgba(255,255,255,0) 65%)",
-].join(", ");
-
 const fade = "linear-gradient(to bottom, #000 0%, #000 45%, transparent 97%)";
 
 export function Shelf({
@@ -26,10 +12,9 @@ export function Shelf({
 }) {
   return (
     <div aria-hidden className={`h-[39.18px] perspective-[1000px] ${className ?? ""}`}>
-      <div className="absolute inset-x-12 top-9 h-2 rounded-full bg-black/10 blur-md" />
       <div
-        style={{ background: fill, transform: "rotateX(13deg)" }}
-        className="relative h-full origin-top overflow-hidden rounded-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.14),0_12px_26px_-18px_rgba(0,0,0,0.22),0_12px_22px_-18px_rgba(124,216,251,0.3),inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-1px_0_rgba(0,0,0,0.14)]"
+        style={{ transform: "rotateX(13deg)" }}
+        className="relative h-full origin-top overflow-hidden rounded-[18px] bg-surface shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.06),0_10px_20px_-14px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.9)]"
       >
         {reflection && (
           <div
@@ -39,13 +24,6 @@ export function Shelf({
             {reflection}
           </div>
         )}
-        <div
-          style={{ background: sheen }}
-          className="pointer-events-none absolute inset-0 mix-blend-screen"
-        />
-        <div className="pointer-events-none absolute inset-x-3 top-0 h-px rounded-full bg-[linear-gradient(90deg,rgba(124,216,251,0)_0%,rgba(175,177,255,0.58)_12%,rgba(255,255,255,0.86)_36%,rgba(206,190,255,0.72)_68%,rgba(124,216,251,0.48)_88%,rgba(124,216,251,0)_100%)]" />
-        <div className="pointer-events-none absolute inset-x-6 top-2 h-2 rounded-full bg-white/20 blur-[1px]" />
-        <div className="pointer-events-none absolute inset-x-4 bottom-0 h-px rounded-full bg-[linear-gradient(90deg,rgba(110,112,190,0)_0%,rgba(110,112,190,0.4)_24%,rgba(140,112,190,0.32)_66%,rgba(140,112,190,0)_100%)]" />
       </div>
     </div>
   );

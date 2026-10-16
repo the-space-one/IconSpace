@@ -113,7 +113,7 @@ export function WindowScene() {
                 top: LAMP.lens[1] - 1,
                 animationDelay: lamp.delay,
               }}
-              className="absolute h-[70px] w-[44px] origin-top -rotate-[30.6deg] animate-lamp-glow bg-[linear-gradient(to_bottom,rgba(255,210,90,0.35),rgba(255,210,90,0))] mix-blend-multiply [clip-path:polygon(38.6%_0,61.4%_0,100%_100%,0_100%)] motion-reduce:animate-none"
+              className="absolute h-[70px] w-[44px] origin-top -rotate-[30.6deg] animate-lamp-glow bg-[rgba(255,210,90,0.16)] mix-blend-multiply [clip-path:polygon(38.6%_0,61.4%_0,100%_100%,0_100%)] motion-reduce:animate-none"
             />
             <Image
               src={LAMP.src}
