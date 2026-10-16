@@ -45,6 +45,13 @@ const CLIENT_ICONS: Record<(typeof CLIENTS)[number], ReactNode> = {
   ),
 };
 
+const MANAGER_ICONS = Object.fromEntries(
+  MANAGERS.map((manager) => [
+    manager,
+    <Image key={manager} src={`/mcp/${manager}.svg`} alt="" width={16} height={16} className="size-4 shrink-0 object-contain" />,
+  ]),
+) as Record<(typeof MANAGERS)[number], ReactNode>;
+
 const MODE_ICONS: Record<(typeof MODES)[number], ReactNode> = {
   MCP: (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-4 shrink-0">
@@ -170,6 +177,7 @@ export function InstallCard() {
             key="manager"
             label="Package manager"
             options={MANAGERS}
+            icons={MANAGER_ICONS}
             value={manager}
             onChange={(next) => {
               setManager(next);
