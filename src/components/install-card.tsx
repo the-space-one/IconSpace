@@ -64,7 +64,7 @@ function Segmented<T extends string>({
           type="button"
           aria-pressed={option === value}
           onClick={() => onChange(option)}
-          className={`${item} cursor-pointer text-muted-foreground transition-[color] duration-150 ease-out hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-strong aria-pressed:bg-white aria-pressed:text-foreground group-data-ready/seg:aria-pressed:bg-transparent`}
+          className={`${item} cursor-pointer text-muted-foreground transition-[color] duration-150 ease-out hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-strong aria-pressed:bg-white aria-pressed:text-foreground group-data-ready/seg:aria-pressed:bg-transparent`}
         >
           {option}
         </button>
@@ -106,7 +106,7 @@ export function InstallCard() {
   }
 
   return (
-    <div className="@container flex w-full flex-col gap-1.5 rounded-[18px] bg-white p-1.5 font-froundy leading-5 shadow-[0_0_0_1px_rgba(59,59,59,0.06),0_1px_2px_rgba(16,16,40,0.06),0_14px_32px_-14px_rgba(120,122,255,0.35)]">
+    <div className="@container flex w-full flex-col gap-1.5 rounded-[18px] bg-white p-1.5 font-froundy leading-5 shadow-[0_0_0_1px_rgba(59,59,59,0.06),0_1px_2px_rgba(16,16,40,0.06),0_14px_32px_-14px_rgba(0,0,0,0.18)]">
       <div className="flex flex-wrap gap-1.5">
         <Segmented label="Client" options={CLIENTS} value={client} onChange={setClient} />
         <div className="w-full @[21rem]:ml-auto @[21rem]:w-auto">
@@ -122,7 +122,7 @@ export function InstallCard() {
         </div>
       </div>
 
-      <div className="flex h-10 items-center gap-2 rounded-[12px] bg-[#f6f6fb] pr-1 pl-3">
+      <div className="flex h-10 items-center gap-2 rounded-[12px] bg-surface pr-1 pl-3">
         <code
           key={snippet}
           className={`min-w-0 flex-1 truncate font-mono text-[12px] @[21rem]:text-[13px] tracking-[-0.2px] text-foreground select-all ${switched ? "animate-snippet-in motion-reduce:animate-none" : ""}`}
@@ -139,7 +139,7 @@ export function InstallCard() {
           onClick={copy}
           aria-label={copied ? "Copied" : "Copy to clipboard"}
           data-copied={copied || undefined}
-          className="group/copy relative grid size-8 shrink-0 cursor-pointer place-items-center rounded-[8px] text-foreground transition-[background-color,scale] duration-150 ease-out after:absolute after:-inset-1 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-strong active:scale-[0.96] motion-reduce:transition-none"
+          className="group/copy relative grid size-8 shrink-0 cursor-pointer place-items-center rounded-[8px] text-foreground transition-[background-color,scale] duration-150 ease-out after:absolute after:-inset-1 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-strong active:scale-[0.96] motion-reduce:transition-none"
         >
           <svg
             viewBox="0 0 14 14"
@@ -162,7 +162,7 @@ export function InstallCard() {
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden
-            className="col-start-1 row-start-1 size-3.5 scale-25 text-brand-strong opacity-0 blur-[4px] transition-[opacity,scale,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] group-data-copied/copy:scale-100 group-data-copied/copy:opacity-100 group-data-copied/copy:blur-none motion-reduce:transition-none"
+            className="col-start-1 row-start-1 size-5 scale-25 rounded-full bg-lime p-[3px] text-foreground opacity-0 blur-[4px] transition-[opacity,scale,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] group-data-copied/copy:scale-100 group-data-copied/copy:opacity-100 group-data-copied/copy:blur-none motion-reduce:transition-none"
           >
             <path d="M2.75 7.5 5.5 10.25 11.25 4" />
           </svg>
