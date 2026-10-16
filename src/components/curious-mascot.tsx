@@ -268,13 +268,13 @@ export function CuriousMascot({ className }: { className?: string }) {
     <button ref={scope} type="button" aria-label="Say hello to the Icon Space cat"
       data-cat-stage={stage}
       onClick={(event) => activate.current(event.detail === 0)}
-      className={`curious-cat grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-xl p-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8e94fd] ${className ?? ""}`}>
+      className={`curious-cat grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-xl p-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9fa1ff] ${className ?? ""}`}>
       <svg viewBox="0 0 211 183" fill="none" aria-hidden="true" focusable="false" className="block w-full overflow-visible">
         <motion.g style={{ transform: headTransform, transformOrigin: "105px 170px", transformBox: "view-box" }}>
           <g className="curious-cat__pose">
             <HeroCatArtwork />
             <motion.g style={{ transform: gazeTransform }}>
-              <g className="curious-cat__gaze-pose" fill="#8e94fd">
+              <g className="curious-cat__gaze-pose" fill="#9fa1ff">
                 {EYES.paths.map((d, index) => (
                   <g key={index}>
                     <defs>
