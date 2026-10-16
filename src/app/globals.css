@@ -12,10 +12,6 @@
   --brand-surface: var(--surface);
   --brand-foreground: #000000;
   --surface: #f8f8f8;
-  --lime: #d4fe6b;
-  --lime-strong: #bfee3f;
-  --sky: #7cd8fb;
-  --sky-strong: #2fb4e8;
   /* Paper fill for icons that draw a page (iconspace-lab's book). */
   --icon-paper: #ffffff;
 }
@@ -32,10 +28,6 @@
   --color-brand-surface: var(--brand-surface);
   --color-brand-foreground: var(--brand-foreground);
   --color-surface: var(--surface);
-  --color-lime: var(--lime);
-  --color-lime-strong: var(--lime-strong);
-  --color-sky: var(--sky);
-  --color-sky-strong: var(--sky-strong);
   --font-froundy: var(--font-froundy-local);
   --font-makenfy: var(--font-makenfy-local);
   --radius-tile: 26.84px;

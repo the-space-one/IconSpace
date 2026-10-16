@@ -50,7 +50,7 @@ function Plank({ slots, scale }: { slots: PreviewTarget[]; scale: string }) {
             <li key={target.instanceId}>
               <button type="button" data-icon={target.name} data-motion-tile={target.instanceId}
                 aria-label={`Preview ${shelfIcon(target.name).label} animation`}
-                className={`${tile} cursor-pointer bg-[rgba(10,10,10,0.03)] text-[#0a0a0a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-strong`}
+                className={`${tile} cursor-pointer bg-[rgba(10,10,10,0.03)] text-[#0a0a0a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground`}
                 onPointerEnter={(event) => {
                   if (event.pointerType !== "touch" && matchMedia("(hover: hover) and (pointer: fine)").matches) {
                     preview("hover", target, true);
