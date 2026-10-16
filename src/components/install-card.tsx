@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grokbot"] as const;
-const MODES = ["MCP", "CLI"] as const;
+const MODES = ["CLI", "MCP"] as const;
 const MANAGERS = ["npm", "pnpm", "yarn", "bun"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
@@ -171,7 +171,7 @@ function Segmented<T extends string>({
 
 export function InstallCard() {
   const [client, setClient] = useState<(typeof CLIENTS)[number]>("ChatGPT");
-  const [mode, setMode] = useState<(typeof MODES)[number]>("MCP");
+  const [mode, setMode] = useState<(typeof MODES)[number]>("CLI");
   const [manager, setManager] = useState<(typeof MANAGERS)[number]>("npm");
   const [copied, setCopied] = useState(false);
   // The snippet only animates when the reader switches it, not on page load.
