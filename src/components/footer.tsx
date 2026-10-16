@@ -25,8 +25,8 @@ const sceneLeft = {
  * is the floor line the shelves, signpost and forklift stand on). */
 const HATCH = { gap: 10.5, run: 19, depth: 28.5 };
 const BANDS = [
-  { y: 416, lean: "back", color: "#d4d4d4" },
-  { y: 418, lean: "forward", color: "#d4d4d4" },
+  { y: 416, lean: "back", color: "#b8d4a8" },
+  { y: 418, lean: "forward", color: "#b8d4a8" },
   { y: 448, lean: "back", color: "#563724" },
   { y: 478, lean: "forward", color: "#563724" },
 ] as const;
