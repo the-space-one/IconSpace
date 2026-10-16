@@ -182,7 +182,7 @@ export function Footer() {
                 <span
                   key={delay}
                   style={{ animationDelay: delay }}
-                  className="absolute top-[84px] left-[6px] size-[14px] animate-exhaust-puff rounded-full border-2 border-[#a2a7fa] bg-[#eef0fe] opacity-0 motion-reduce:hidden"
+                  className="absolute top-[84px] left-[6px] size-[14px] animate-exhaust-puff rounded-full border-2 border-[#c4c4c4] bg-[#f4f4f4] opacity-0 motion-reduce:hidden"
                 />
               ))}
               {/* pitch on starts and stops, from the wheels */}
