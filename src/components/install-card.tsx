@@ -5,16 +5,22 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grokbot"] as const;
 const MODES = ["MCP", "CLI"] as const;
+const MANAGERS = ["npm", "pnpm", "yarn", "bun"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
-const CLI_COMMAND = "npx iconspace";
+const CLI_COMMANDS: Record<(typeof MANAGERS)[number], string> = {
+  npm: "npx iconspace",
+  pnpm: "pnpm dlx iconspace",
+  yarn: "yarn dlx iconspace",
+  bun: "bunx iconspace",
+};
 
 // Card radius 18 = well/track radius 12 + card padding 6;
 // thumb radius 8 = track radius 12 + track padding 4.
 const item =
-  "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-[8px] px-2 text-[13px] whitespace-nowrap @[21rem]:flex-none sm:px-2.5 after:absolute after:inset-x-0 after:-inset-y-1.5";
+  "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-[8px] px-2 text-[13px] whitespace-nowrap @[31rem]:flex-none sm:px-2.5 after:absolute after:inset-x-0 after:-inset-y-1.5";
 const pillItem =
-  "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold tracking-wide whitespace-nowrap uppercase @[21rem]:flex-none after:absolute after:inset-x-0 after:-inset-y-1.5";
+  "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold tracking-wide whitespace-nowrap uppercase @[31rem]:flex-none after:absolute after:inset-x-0 after:-inset-y-1.5";
 
 const CLIENT_ICONS: Record<(typeof CLIENTS)[number], ReactNode> = {
   ChatGPT: (
@@ -103,7 +109,7 @@ function Segmented<T extends string>({
   }, [value, radius]);
 
   return (
-    <div ref={track} role="group" aria-label={label} className={`group/seg relative flex w-full p-1 @[21rem]:w-auto ${pill ? "rounded-full bg-surface shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]" : "rounded-[12px] bg-brand-surface"}`}>
+    <div ref={track} role="group" aria-label={label} className={`group/seg relative flex w-full p-1 @[31rem]:w-auto ${pill ? "rounded-full bg-surface shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]" : "rounded-[12px] bg-brand-surface"}`}>
       {options.map((option) => (
         <button
           key={option}
@@ -135,12 +141,13 @@ function Segmented<T extends string>({
 export function InstallCard() {
   const [client, setClient] = useState<(typeof CLIENTS)[number]>("ChatGPT");
   const [mode, setMode] = useState<(typeof MODES)[number]>("MCP");
+  const [manager, setManager] = useState<(typeof MANAGERS)[number]>("npm");
   const [copied, setCopied] = useState(false);
   // The snippet only animates when the reader switches it, not on page load.
   const [switched, setSwitched] = useState(false);
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const snippet = mode === "MCP" ? MCP_URL : CLI_COMMAND;
+  const snippet = mode === "MCP" ? MCP_URL : CLI_COMMANDS[manager];
 
   async function copy() {
     try {
@@ -156,8 +163,21 @@ export function InstallCard() {
   return (
     <div className="@container flex w-full flex-col gap-1.5 rounded-[18px] bg-white p-1.5 font-froundy leading-5 shadow-[0_0_0_1px_rgba(59,59,59,0.06),0_1px_2px_rgba(16,16,40,0.06),0_14px_32px_-14px_rgba(0,0,0,0.18)]">
       <div className="flex flex-wrap gap-1.5">
-        <Segmented label="Client" options={CLIENTS} icons={CLIENT_ICONS} value={client} onChange={setClient} />
-        <div className="w-full @[21rem]:ml-auto @[21rem]:w-auto">
+        {mode === "MCP" ? (
+          <Segmented key="client" label="Client" options={CLIENTS} icons={CLIENT_ICONS} value={client} onChange={setClient} />
+        ) : (
+          <Segmented
+            key="manager"
+            label="Package manager"
+            options={MANAGERS}
+            value={manager}
+            onChange={(next) => {
+              setManager(next);
+              setSwitched(true);
+            }}
+          />
+        )}
+        <div className="w-full @[31rem]:ml-auto @[31rem]:w-auto">
           <Segmented
             label="Install method"
             options={MODES}
