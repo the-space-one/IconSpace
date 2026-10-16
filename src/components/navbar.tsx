@@ -41,7 +41,7 @@ export function Navbar() {
                 href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cta__button relative z-10 flex h-9 items-center justify-center rounded-lg bg-[#171717] px-3 py-2 text-sm leading-5 whitespace-nowrap text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-colors hover:bg-[#2a2a2a]"
+                className="cta__button relative z-10 flex h-9 items-center justify-center rounded-lg bg-brand px-3 py-2 text-sm leading-5 whitespace-nowrap text-brand-foreground shadow-[inset_0_0_0_2px_var(--color-brand-strong)] transition-colors hover:bg-brand-hover"
               >
                 On github
               </a>
