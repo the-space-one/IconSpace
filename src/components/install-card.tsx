@@ -1,9 +1,9 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const CLIENTS = ["Chat gpt", "Claude", "Cursor", "Grokbot"] as const;
-const MODES = ["CLI", "MCP"] as const;
+const MODES = ["MCP", "CLI"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
 const CLI_COMMAND = "npx iconspace";
@@ -12,6 +12,22 @@ const CLI_COMMAND = "npx iconspace";
 // thumb radius 8 = track radius 12 + track padding 4.
 const item =
   "relative flex h-7 flex-1 items-center justify-center rounded-[8px] px-2 text-[13px] whitespace-nowrap @[21rem]:flex-none sm:px-2.5 after:absolute after:inset-x-0 after:-inset-y-1.5";
+const pillItem =
+  "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold tracking-wide whitespace-nowrap uppercase @[21rem]:flex-none after:absolute after:inset-x-0 after:-inset-y-1.5";
+
+const MODE_ICONS: Record<(typeof MODES)[number], ReactNode> = {
+  MCP: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-4 shrink-0">
+      <path d="M11.053 2.793a3.564 3.564 0 0 1 5.04 0l.126.133A3.56 3.56 0 0 1 17.1 5.82a3.56 3.56 0 0 1 2.897.88l.132.127.042.042.126.132a3.564 3.564 0 0 1-.126 4.908L12.88 19.2a.24.24 0 0 0 0 .336l1.497 1.497a.713.713 0 1 1-1.008 1.008l-1.497-1.498a1.663 1.663 0 0 1 0-2.351l7.292-7.293a2.14 2.14 0 0 0 .147-2.862l-.147-.163-.042-.041a2.14 2.14 0 0 0-3.024 0l-6.006 6.005c-.006.007-.014.01-.021.017l-.066.067a.713.713 0 0 1-1.008-1.008l6.09-6.09a2.139 2.139 0 0 0-3.025-3.024l-8.063 8.064a.713.713 0 0 1-1.008-1.008z" />
+      <path d="M13.078 4.81a.713.713 0 0 1 1.008 1.007L8.121 11.78a2.138 2.138 0 0 0 3.024 3.023l5.964-5.963a.713.713 0 0 1 1.008 1.008l-5.964 5.964a3.564 3.564 0 0 1-5.04-5.04z" />
+    </svg>
+  ),
+  CLI: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="size-4 shrink-0">
+      <path d="m9.75 20.25 4.5-16.5m4 4 3.355 3.565a1 1 0 0 1 0 1.37L18.25 16.25m-12.5 0-3.355-3.565a1 1 0 0 1 0-1.37L5.75 7.75" />
+    </svg>
+  ),
+};
 
 /**
  * Segmented control with the clip-path highlight: a copy of the labels styled
@@ -25,12 +41,18 @@ function Segmented<T extends string>({
   options,
   value,
   onChange,
+  icons,
+  pill = false,
 }: {
   label: string;
   options: readonly T[];
   value: T;
   onChange: (value: T) => void;
+  icons?: Record<T, ReactNode>;
+  pill?: boolean;
 }) {
+  const cell = pill ? pillItem : item;
+  const radius = pill ? "999px" : "8px";
   const track = useRef<HTMLDivElement>(null);
   const highlight = useRef<HTMLDivElement>(null);
 
@@ -43,7 +65,7 @@ function Segmented<T extends string>({
       if (!active) return;
       const left = active.offsetLeft;
       const right = el.offsetWidth - left - active.offsetWidth;
-      overlay.style.clipPath = `inset(4px ${right}px 4px ${left}px round 8px)`;
+      overlay.style.clipPath = `inset(4px ${right}px 4px ${left}px round ${radius})`;
       if (!el.dataset.ready) {
         el.dataset.ready = "";
         // Let the first position paint before the slide transition is on.
@@ -54,18 +76,19 @@ function Segmented<T extends string>({
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [value]);
+  }, [value, radius]);
 
   return (
-    <div ref={track} role="group" aria-label={label} className="group/seg relative flex w-full rounded-[12px] bg-brand-surface p-1 @[21rem]:w-auto">
+    <div ref={track} role="group" aria-label={label} className={`group/seg relative flex w-full p-1 @[21rem]:w-auto ${pill ? "rounded-full bg-surface shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]" : "rounded-[12px] bg-brand-surface"}`}>
       {options.map((option) => (
         <button
           key={option}
           type="button"
           aria-pressed={option === value}
           onClick={() => onChange(option)}
-          className={`${item} cursor-pointer text-muted-foreground transition-[color] duration-150 ease-out hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground aria-pressed:bg-white aria-pressed:text-foreground group-data-ready/seg:aria-pressed:bg-transparent`}
+          className={`${cell} cursor-pointer text-muted-foreground transition-[color] duration-150 ease-out hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground aria-pressed:bg-white aria-pressed:text-foreground group-data-ready/seg:aria-pressed:bg-transparent`}
         >
+          {icons?.[option]}
           {option}
         </button>
       ))}
@@ -75,7 +98,8 @@ function Segmented<T extends string>({
         className="pointer-events-none absolute inset-0 flex bg-white p-1 opacity-0 duration-[220ms] ease-[cubic-bezier(0.645,0.045,0.355,1)] group-data-ready/seg:opacity-100 motion-reduce:transition-none"
       >
         {options.map((option) => (
-          <span key={option} className={`${item} text-foreground`}>
+          <span key={option} className={`${cell} text-foreground`}>
+            {icons?.[option]}
             {option}
           </span>
         ))}
@@ -113,6 +137,8 @@ export function InstallCard() {
           <Segmented
             label="Install method"
             options={MODES}
+            icons={MODE_ICONS}
+            pill
             value={mode}
             onChange={(next) => {
               setMode(next);
