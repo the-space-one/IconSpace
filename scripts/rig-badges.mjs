@@ -46,9 +46,12 @@ const RIGS = {
   spark: {
     shared: [0, 2],
     parts: [
-      { name: "ribbon-l", paths: [35, 36, 37], b: 4, pivot: [24, 63], test: "rotate(9)" },
-      { name: "ribbon-r", paths: [32, 33, 34], b: 4, pivot: [51, 63], test: "rotate(-9)" },
-      { name: "rosette", paths: [1], b: 4, keep: [34, 37], pivot: [37.42, 37.5], test: "rotate(2.5)" },
+      // The ribbons and rosette share their outlines with each other and with
+      // the disc, so moving them alone tears the art at the joins; the whole
+      // badge swings instead (badge-motion.module.css).
+      { name: "ribbon-l", paths: [35, 36, 37], b: 4, still: true },
+      { name: "ribbon-r", paths: [32, 33, 34], b: 4, still: true },
+      { name: "rosette", paths: [1], b: 4, keep: [34, 37], still: true },
       { name: "disc", paths: [3], region: [2], still: true },
       {
         name: "head",

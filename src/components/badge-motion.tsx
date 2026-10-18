@@ -14,16 +14,51 @@ const INTRO = {
   stagger: 140, // spacing between badges, left to right
 };
 
+/** Lays a badge's rig (if it has one) over its art, once. */
+export async function rig(badge: HTMLElement, alive: () => boolean = () => true) {
+  const load = RIGS[badge.dataset.badge!];
+  const slot = badge.querySelector("[data-rig-slot]");
+  if (!load || !slot || "rigged" in badge.dataset) return;
+  const { markup } = await load();
+  if (!alive() || "rigged" in badge.dataset) return;
+  const layers = document.createElement("div");
+  layers.className = styles.rig;
+  layers.innerHTML = markup;
+  slot.append(layers);
+  badge.dataset.rigged = "";
+}
+
 /* ANIMATION STORYBOARD
- *   0ms   SSR renders the resting art; observe the badge row
+ *   0ms   SSR renders mystery tiles; earned badges arrive after mount
  * near    row within 600px: load each rig and lay it over its (identical) art
- * 250ms   row 60% in view and rigs ready: badges play once, left to right
+ * 250ms   row 60% in view and rigs ready: opened badges play once, left to right
  * +140ms  each following badge starts
  * hover   (mouse only) replay one badge; retriggers wait for its run to end
  * hidden  clear pending work and return every badge to rest
- * The storyboards themselves live in badge-motion.module.css. */
-export function BadgeMotion({ children, className }: { children: ReactNode; className?: string }) {
+ * Opening a badge is the reward ceremony (badge-reward.tsx). The storyboards
+ * themselves live in badge-motion.module.css. */
+export function BadgeMotion({
+  children,
+  className,
+  opened,
+}: {
+  children: ReactNode;
+  className?: string;
+  opened: number;
+}) {
   const row = useRef<HTMLDivElement>(null);
+  // Survive re-runs (a badge opened mid-visit): the intro plays once per page
+  // view, and running timers finish their runs.
+  const introPlayed = useRef(false);
+  const timers = useRef(new Set<ReturnType<typeof setTimeout>>());
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      pending.forEach(clearTimeout);
+      pending.clear();
+    };
+  }, []);
 
   useEffect(() => {
     const element = row.current;
@@ -31,13 +66,12 @@ export function BadgeMotion({ children, className }: { children: ReactNode; clas
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const hover = matchMedia("(hover: hover) and (pointer: fine)");
     const badges = [...element.querySelectorAll<HTMLElement>("[data-badge]")];
-    const timers = new Set<ReturnType<typeof setTimeout>>();
     const later = (run: () => void, ms: number) => {
       const timer = setTimeout(() => {
-        timers.delete(timer);
+        timers.current.delete(timer);
         run();
       }, ms);
-      timers.add(timer);
+      timers.current.add(timer);
     };
 
     const rigged = (badge: HTMLElement) => !(badge.dataset.badge! in RIGS) || "rigged" in badge.dataset;
@@ -47,35 +81,24 @@ export function BadgeMotion({ children, className }: { children: ReactNode; clas
       later(() => delete badge.dataset.playing, Number(badge.dataset.duration));
     };
     const cancel = () => {
-      timers.forEach(clearTimeout);
-      timers.clear();
+      timers.current.forEach(clearTimeout);
+      timers.current.clear();
       badges.forEach((badge) => delete badge.dataset.playing);
     };
 
     let alive = true;
-    const injected: HTMLElement[] = [];
-    const rig = async (badge: HTMLElement) => {
-      const load = RIGS[badge.dataset.badge!];
-      const slot = badge.querySelector("[data-rig-slot]");
-      if (!load || !slot) return;
-      const { markup } = await load();
-      if (!alive) return;
-      const layers = document.createElement("div");
-      layers.className = styles.rig;
-      layers.innerHTML = markup;
-      slot.append(layers);
-      injected.push(layers);
-      badge.dataset.rigged = "";
-    };
     const near = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       near.disconnect();
-      // A badge whose rig fails to load keeps its static art and never plays.
-      Promise.allSettled(badges.map(rig)).then(() => alive && intro.observe(element));
+      // A badge whose rig fails to load keeps its static art.
+      Promise.allSettled(badges.map((badge) => rig(badge, () => alive))).then(
+        () => alive && !introPlayed.current && intro.observe(element),
+      );
     }, { rootMargin: "600px" });
     const intro = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       intro.disconnect();
+      introPlayed.current = true;
       badges.forEach((badge, index) => later(() => play(badge), INTRO.delay + index * INTRO.stagger));
     }, { threshold: 0.6 });
     near.observe(element);
@@ -93,14 +116,11 @@ export function BadgeMotion({ children, className }: { children: ReactNode; clas
       alive = false;
       near.disconnect();
       intro.disconnect();
-      injected.forEach((layers) => layers.remove());
-      badges.forEach((badge) => delete badge.dataset.rigged);
-      cancel();
       badges.forEach((badge) => badge.removeEventListener("pointerenter", onEnter));
       reduced.removeEventListener("change", onChange);
       document.removeEventListener("visibilitychange", onChange);
     };
-  }, []);
+  }, [opened]);
 
   return <div ref={row} className={className}>{children}</div>;
 }

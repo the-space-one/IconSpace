@@ -6,7 +6,7 @@
              div per part, [data-part="…"], each with its pivot as
              transform-origin, over a white patch of what it leaves behind
      .part   v1 detail for badges not rigged yet (see badge-parts.ts)
-   Everything rests on the original art: SSR, locked badges and reduced motion
+   Everything rests on the original art: SSR, mystery tiles and reduced motion
    never see a transform. A run is one `data-playing` window set by
    BadgeMotion; each layer starts at its own `--at`. */
 .tile {
@@ -51,34 +51,108 @@
   background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .75) 50%, transparent 70%);
 }
 
+/* Easter egg. Unearned badges are .mystery tiles with only a "?". The badge
+   earned but not yet opened is a .ready button in the badges' own palette: a
+   light brand tint, a brand-outline ring and a gift box that rattles now and
+   then, like loot in a game. Clicking it ([data-opening]) shakes the gift
+   until the reward ceremony is ready; the launch ([data-launch]) knocks the
+   lid off, pops the gift and fades the fill while the reward
+   ceremony (badge-reward.tsx) flies the badge to the centre and back; it
+   comes home as a [data-landed] tile with a squash and a burst. Nothing here
+   reaches outside the tile: the footer clips anything above the row. */
+.mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-froundy);
+  font-size: 44px;
+  line-height: 1;
+  color: #c6c8f7;
+  pointer-events: none;
+}
+.ready {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+/* The fill is a layer of its own, so opening can fade it (opacity only). */
+.ready::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in oklch, var(--color-brand) 18%, white);
+  box-shadow: inset 0 0 0 2px var(--color-brand-outline), inset 0 1px 3px 0 rgb(118 123 252 / .18);
+}
+.glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #767bfc;
+  pointer-events: none;
+}
+.gift { overflow: visible; transform-origin: 50% 85%; }
+.lid { transform-box: fill-box; transform-origin: 50% 100%; }
+.ready:focus-visible { outline: 2px solid #767bfc; outline-offset: -6px; }
+.ready[data-opening] { pointer-events: none; }
+.ready[data-launch]::before, .ready[data-launch] .glyph { opacity: 0; }
+.burst { position: absolute; inset: 0; display: none; pointer-events: none; }
+.burst > span {
+  position: absolute;
+  top: calc(50% - 4px);
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #8b8dfd;
+  opacity: 0;
+}
+/* Sideways and down only: the footer clips anything above the row. */
+.burst > span:nth-child(1) { --a: 60deg; }
+.burst > span:nth-child(2) { --a: 100deg; }
+.burst > span:nth-child(3) { --a: 140deg; }
+.burst > span:nth-child(4) { --a: -60deg; }
+.burst > span:nth-child(5) { --a: -100deg; }
+.burst > span:nth-child(6) { --a: -140deg; }
+@media (prefers-reduced-motion: reduce) {
+  .ready::before, .ready .glyph { transition: opacity 200ms ease-out; }
+}
+
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .lift { transition: translate 180ms var(--settle); }
   .tile:hover .lift {
     translate: 0 -2px;
     transition-duration: 220ms;
   }
+  .ready::before { transition: background-color 150ms ease; }
+  .ready:hover::before { background: color-mix(in oklch, var(--color-brand) 30%, white); }
+  .mystery:hover .mark { animation: wiggle 400ms ease-in-out; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   /* ANIMATION STORYBOARD — First Spark "wake", 1400ms
        0ms  anticipate: squash into the base
-     240ms  hop 5px, stretched; ribbons trail behind (60ms late)
-     385ms  land with a squash; ribbons flare out, then damp to rest
+     240ms  hop 5px, stretched
+     385ms  land with a squash
      300ms  star ignites: dips, pops 1.35x with a twist, settles
      380ms  rays burst back out (right 30ms behind)
      420ms  head takes the landing: squash, nod -4deg, recover
+     420ms  the landing turns into a ±4deg swing of the whole badge (800ms),
+            so the ribbons sway without tearing from the rosette
      520ms  left paw waves twice from the wrist
-     600ms  rosette ring wobbles ±2.5deg
     1400ms  rest */
   .tile[data-badge="spark"][data-playing] .hop { animation: spark-hop 700ms ease-in-out both; }
-  .tile[data-badge="spark"][data-playing] [data-part="ribbon-l"] { animation: flutter-l 900ms ease-in-out 60ms both; }
-  .tile[data-badge="spark"][data-playing] [data-part="ribbon-r"] { animation: flutter-r 900ms ease-in-out 60ms both; }
+  .tile[data-badge="spark"] { --swing: 4deg; }
+  .tile[data-badge="spark"][data-playing] .swing { animation: swing 800ms ease-in-out 420ms both; }
   .tile[data-badge="spark"][data-playing] [data-part="star"] { animation: ignite 560ms var(--snap) 300ms both; }
   .tile[data-badge="spark"][data-playing] [data-part="ray-l"] { animation: burst-l 420ms ease-in-out 380ms both; }
   .tile[data-badge="spark"][data-playing] [data-part="ray-r"] { animation: burst-r 420ms ease-in-out 410ms both; }
   .tile[data-badge="spark"][data-playing] [data-part="head"] { animation: nod 600ms ease-in-out 420ms both; }
   .tile[data-badge="spark"][data-playing] [data-part="paw-l"] { animation: wave 760ms ease-in-out 520ms both; }
-  .tile[data-badge="spark"][data-playing] [data-part="rosette"] { animation: wobble 700ms ease-in-out 600ms both; }
 
   /* ANIMATION STORYBOARD — Regular "hang swing", 900ms
        0ms  pendulum swing ±6deg, damped (800ms)
@@ -112,6 +186,28 @@
   .tile[data-badge="legend"][data-playing] .swing { animation: swing 800ms ease-in-out 420ms both; }
   .tile[data-badge="legend"][data-playing] .band { animation: shine 550ms ease-in-out 520ms both; }
 
+
+  /* ANIMATION STORYBOARD — the ready tile
+     idle     every 2.8s, while on screen ([data-in-view]): the gift squashes,
+              hops and wobbles; the lid pops up a beat later and lands; then
+              it rests for the remaining ~1.8s
+     press    scale .96
+     opening  the gift shakes (360ms loop) until the ceremony is ready, at
+              least 260ms, so a slow load never leaves an empty tile
+     launch   the lid flies off (340ms); the gift squashes and pops (240ms)
+              as the badge rises out of it; the fill fades (250ms) */
+  .ready { transition: scale 150ms ease-out; }
+  .ready:active { scale: .96; }
+  .ready[data-in-view]:not([data-opening]) .gift { animation: rattle 2.8s ease-in-out 400ms infinite; }
+  .ready[data-in-view]:not([data-opening]) .lid { animation: lid-pop 2.8s ease-in-out 400ms infinite; }
+  .ready[data-opening]:not([data-launch]) .gift { animation: shake 360ms ease-in-out infinite; }
+  .ready[data-launch] .glyph { animation: gift-pop 240ms ease-out both; }
+  .ready[data-launch] .lid { animation: lid-off 340ms cubic-bezier(.19, 1, .22, 1) both; }
+  .ready[data-launch]::before { animation: fade-out 250ms ease-out 60ms both; }
+  .tile[data-landed] .frame { animation: frame-squash 360ms ease-in-out both; }
+  .tile[data-landed] .burst { display: block; }
+  .tile[data-landed] .burst > span { animation: burst 600ms cubic-bezier(.63, -.01, .29, 1) 60ms both; }
+
   .tile[data-playing] .pop { animation: pop 480ms var(--snap) var(--at) both; }
   .tile[data-playing] .flash { animation: flash 420ms ease-out var(--at) both; }
   .tile[data-playing] .twinkle { animation: twinkle 450ms ease-in-out var(--at) both; }
@@ -126,20 +222,6 @@
   55% { transform: scale(1.06, .92); }
   70% { transform: scale(.98, 1.02); }
   84% { transform: scale(1.01, .99); }
-}
-@keyframes flutter-l {
-  0%, 100% { transform: none; }
-  18% { transform: rotate(-5deg) skewX(2deg); }
-  40% { transform: rotate(9deg) skewX(-2deg); }
-  60% { transform: rotate(-4deg); }
-  78% { transform: rotate(2deg); }
-}
-@keyframes flutter-r {
-  0%, 100% { transform: none; }
-  18% { transform: rotate(5deg) skewX(-2deg); }
-  40% { transform: rotate(-9deg) skewX(2deg); }
-  60% { transform: rotate(4deg); }
-  78% { transform: rotate(-2deg); }
 }
 @keyframes ignite {
   0%, 100% { transform: none; }
@@ -170,12 +252,6 @@
   35% { transform: rotate(-14deg); }
   55% { transform: rotate(2deg); }
   75% { transform: rotate(-12deg); }
-}
-@keyframes wobble {
-  0%, 100% { transform: none; }
-  20% { transform: rotate(2.5deg); }
-  45% { transform: rotate(-2deg); }
-  70% { transform: rotate(1deg); }
 }
 
 @keyframes hop {
@@ -217,4 +293,56 @@
 @keyframes shine {
   from { translate: -120% 0; }
   to { translate: 120% 0; }
+}
+
+/* Ready and landed. Like the rest, each set starts and ends at rest (gift-pop
+   and fade-out end gone, which is the opening tile's resting state). */
+@keyframes rattle {
+  0%, 36%, 100% { transform: none; }
+  4% { transform: scale(1.08, .9); }
+  10% { transform: translateY(-4px) rotate(-8deg); }
+  16% { transform: translateY(-4px) rotate(7deg); }
+  22% { transform: translateY(-1px) rotate(-4deg); }
+  28% { transform: scale(1.05, .95); }
+}
+@keyframes lid-pop {
+  0%, 9%, 36%, 100% { transform: none; }
+  14% { transform: translateY(-1.6px) rotate(-7deg); }
+  20% { transform: translateY(-.6px) rotate(5deg); }
+  27% { transform: none; }
+}
+@keyframes lid-off {
+  0% { opacity: 1; transform: none; }
+  65% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-9px) rotate(-28deg); }
+}
+@keyframes shake {
+  0%, 100% { transform: none; }
+  25% { transform: translateY(-2px) rotate(-8deg); }
+  50% { transform: scale(1.04, .96); }
+  75% { transform: translateY(-2px) rotate(8deg); }
+}
+@keyframes gift-pop {
+  0% { opacity: 1; transform: none; }
+  40% { opacity: 1; transform: scale(1.15, .82); }
+  100% { opacity: 0; transform: scale(.7); }
+}
+@keyframes frame-squash {
+  0%, 100% { transform: none; }
+  35% { transform: scale(.96); }
+  70% { transform: scale(1.04); }
+}
+@keyframes burst {
+  0% { opacity: 0; transform: rotate(var(--a)) translateY(0) scale(.6); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(-64px) scale(.3); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: none; }
+  25% { transform: rotate(-6deg); }
+  60% { transform: rotate(6deg); }
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }

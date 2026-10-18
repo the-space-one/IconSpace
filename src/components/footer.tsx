@@ -1,8 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { Badges } from "@/components/badge";
+import { BadgeShelf } from "@/components/badge-shelf";
 import { Forklift } from "@/components/forklift";
-import { BadgeMotion } from "@/components/badge-motion";
 
 // The scene's scale. Below xl it fits the 1512-wide scene to the viewport but
 // never drops under 0.55× (phones get a crop instead of a speck). From xl it
@@ -194,9 +193,7 @@ export function Footer() {
               </div>
             </div>
 
-            <BadgeMotion className="absolute top-0 left-[488px] flex gap-8">
-              <Badges />
-            </BadgeMotion>
+            <BadgeShelf className="absolute top-0 left-[488px] flex gap-8" />
           </div>
         </div>
         {/* Each shelf keeps its open side on its own screen edge; the signpost

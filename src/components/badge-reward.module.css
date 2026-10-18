@@ -1,0 +1,177 @@
+/* The reward ceremony (badge-reward.tsx). A full-screen modal <dialog>; its
+   data-phase drives everything here: in → hold → out → back. Built for weak
+   phones: only transform and opacity animate, nothing is blurred, the dim is
+   a flat colour, the rays are one gradient disc painted once and only turned,
+   and nothing stays mounted after the ceremony. */
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  cursor: pointer;
+}
+.dialog::backdrop { background: transparent; }
+.dialog:focus { outline: none; }
+
+.dim {
+  position: absolute;
+  inset: 0;
+  background: rgb(18 17 42 / 0.84);
+  opacity: 0;
+}
+
+.centre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 20px;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.stage { position: relative; display: grid; place-items: center; }
+
+/* The badge at the centre: laid out at its full size (zoom, not a scaled-up
+   transform), so the resting frame is drawn sharp; the flights scale it down
+   to the tile and back. */
+.anchor {
+  position: relative;
+  width: calc(110px * var(--k));
+  height: calc(110px * var(--k));
+}
+.fly { position: absolute; inset: 0; }
+.squash { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.grow { zoom: var(--k); }
+
+.rays, .glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 999px;
+  opacity: 0;
+}
+.rays {
+  width: min(92vmin, 560px);
+  aspect-ratio: 1;
+  background: repeating-conic-gradient(rgb(159 161 255 / 0.55) 0deg 8deg, transparent 8deg 22.5deg);
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 100%);
+}
+.glow {
+  width: min(64vmin, 380px);
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, rgb(198 200 247 / 0.55), rgb(118 123 252 / 0.18) 55%, transparent);
+}
+
+.sparkles { position: absolute; top: 50%; left: 50%; }
+.sparkles > span {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #c9c8fb;
+  opacity: 0;
+}
+.sparkles > span:nth-child(even) { top: -3px; left: -3px; width: 6px; height: 6px; background: #fff; }
+.sparkles > span:nth-child(1) { --a: 0deg; }
+.sparkles > span:nth-child(2) { --a: 45deg; }
+.sparkles > span:nth-child(3) { --a: 90deg; }
+.sparkles > span:nth-child(4) { --a: 135deg; }
+.sparkles > span:nth-child(5) { --a: 180deg; }
+.sparkles > span:nth-child(6) { --a: 225deg; }
+.sparkles > span:nth-child(7) { --a: 270deg; }
+.sparkles > span:nth-child(8) { --a: 315deg; }
+.dialog[data-lite] .sparkles > span:nth-child(even) { display: none; }
+
+.title { display: grid; justify-items: center; gap: 6px; color: #fff; text-align: center; opacity: 0; }
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c6c8f7;
+}
+.name {
+  font-family: var(--font-froundy);
+  font-size: clamp(32px, 7vmin, 48px);
+  line-height: 1.1;
+}
+
+/* Resting states per phase, so a skipped or missing animation still shows
+   the right thing. */
+.dialog[data-phase="in"] .dim,
+.dialog[data-phase="hold"] .dim,
+.dialog[data-phase="out"] .dim { opacity: 1; }
+.dialog[data-phase="hold"] :is(.rays, .glow, .title) { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ANIMATION STORYBOARD — see badge-reward.tsx for the whole ceremony
+       in    dim fades in (250ms); the badge rises out of the gift (WAAPI)
+       hold  squash and settle (420ms); sparkles burst (700ms); glow blooms
+             (360ms); rays bloom at 80ms and turn, one turn per 12s; title
+             rises in at 250ms
+       out   rays, glow and title fade (220ms); the badge inhales (220ms)
+       back  dim fades (550ms, paired with the flight back, WAAPI) */
+  .dialog[data-phase="in"] .dim { animation: fade-in 250ms ease-out both; }
+  .dialog[data-phase="back"] .dim { animation: fade-out 550ms ease-in-out both; }
+  .dialog[data-phase="hold"] .squash { animation: land 420ms ease-in-out both; }
+  .dialog[data-phase="out"] .squash { animation: inhale 220ms ease-in-out both; }
+  .dialog[data-phase="hold"] .sparkles > span {
+    animation: sparkle 700ms cubic-bezier(0.63, -0.01, 0.29, 1) both;
+  }
+  .dialog[data-phase="hold"] .glow { animation: bloom 360ms cubic-bezier(0.165, 0.84, 0.44, 1) both; }
+  .dialog[data-phase="hold"] .rays { animation: spin 12s linear infinite, bloom 500ms cubic-bezier(0.165, 0.84, 0.44, 1) 80ms both; }
+  .dialog[data-phase="out"] .rays { animation: spin 12s linear infinite, fade-out 220ms ease-out both; }
+  .dialog[data-phase="out"] :is(.glow, .title) { animation: fade-out 220ms ease-out both; }
+  .dialog[data-phase="hold"] .title { animation: rise 420ms cubic-bezier(0.165, 0.84, 0.44, 1) 250ms both; }
+  /* Slower phones: the rays hold still. */
+  .dialog[data-lite][data-phase] .rays { animation-play-state: paused, running; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing moves: the badge waits at the centre and everything crossfades. */
+  .dialog[data-phase="in"] :is(.dim, .anchor) { animation: fade-in 300ms ease-out both; }
+  .dialog[data-phase="hold"] :is(.glow, .title) { animation: fade-in 300ms ease-out both; }
+  .dialog[data-phase="out"] :is(.glow, .title) { animation: fade-out 200ms ease-out both; }
+  .dialog[data-phase="back"] :is(.dim, .anchor) { animation: fade-out 300ms ease-out both; }
+  .rays, .sparkles { display: none; }
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bloom {
+  from { opacity: 0; scale: 0.6; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes inhale {
+  0%, 100% { transform: none; }
+  55% { transform: scale(1.06); }
+}
+@keyframes spin { to { rotate: 1turn; } }
+@keyframes land {
+  0%, 100% { transform: none; }
+  30% { transform: scale(1.08, 0.92); }
+  60% { transform: scale(0.97, 1.03); }
+  80% { transform: scale(1.01, 0.99); }
+}
+@keyframes sparkle {
+  0% { opacity: 0; transform: rotate(var(--a)) translateY(0) scale(0.6); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(-82px * var(--k))) scale(0.3); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
