@@ -3,7 +3,7 @@ import { CuriousMascot } from "@/components/curious-mascot";
 import { MascotPeek } from "@/components/mascot-peek";
 
 // The remote of ~/Desktop/Icon-Waitlist.
-const GITHUB_URL = "https://github.com/abhinavkale-dev/Iconspace-waitlist";
+const GITHUB_URL = "https://github.com/the-space-one/IconSpace";
 
 export function Navbar() {
   return (

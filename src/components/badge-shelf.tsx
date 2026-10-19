@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Badges, type BadgeDef } from "./badge";
 import { BadgeMotion } from "./badge-motion";
-import { award, open, readEarned, readOpened, subscribe } from "./badge-visits";
+import { award, open, readEarned, readOpened, readNextEligibleAt, subscribe } from "./badge-visits";
 
 // The reward ceremony, fetched only by visitors with a badge to open.
 const loadReward = () => import("./badge-reward");
@@ -17,6 +17,7 @@ const BadgeReward = dynamic(() => loadReward().then((module) => module.BadgeRewa
 export function BadgeShelf({ className }: { className?: string }) {
   const earned = useSyncExternalStore(subscribe, readEarned, () => 0);
   const opened = useSyncExternalStore(subscribe, readOpened, () => 0);
+  const nextEligibleAt = useSyncExternalStore(subscribe, readNextEligibleAt, () => 0);
   const [opening, setOpening] = useState<{ badge: BadgeDef; tile: HTMLElement; at: number }>();
   const [landed, setLanded] = useState<string>();
 
@@ -31,6 +32,7 @@ export function BadgeShelf({ className }: { className?: string }) {
         <Badges
           earned={earned}
           opened={opened}
+          nextEligibleAt={nextEligibleAt}
           landed={landed}
           onOpen={(badge, tile) => {
             if (opening) return;

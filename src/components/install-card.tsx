@@ -8,10 +8,10 @@ const MANAGERS = ["npm", "pnpm", "yarn", "bun"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
 const CLI_COMMANDS: Record<(typeof MANAGERS)[number], string> = {
-  npm: "npx iconspace",
-  pnpm: "pnpm dlx iconspace",
-  yarn: "yarn dlx iconspace",
-  bun: "bunx iconspace",
+  npm: "npx iconspace add cart",
+  pnpm: "pnpm dlx iconspace add cart",
+  yarn: "yarn dlx iconspace add cart",
+  bun: "bunx iconspace add cart",
 };
 
 // Card radius 18 = well/track radius 12 + card padding 6;

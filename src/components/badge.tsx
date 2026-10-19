@@ -162,10 +162,15 @@ function Mystery({ badge, hint }: { badge: BadgeDef; hint: string }) {
 }
 
 /** When a mystery tile unlocks: one badge a day, and only after the gift before it is opened. */
-function unlockHint(index: number, earned: number) {
+function unlockHint(index: number, earned: number, opened: number, nextEligibleAt: number) {
   if (index < earned) return "Open the gift first";
-  const days = index - earned + 1;
-  return days === 1 ? "Come back tomorrow" : `Come back in ${days} days`;
+  if (index > earned) return "Keep visiting, at least 24 hours apart";
+  if (earned > opened) return "Return 24 hours after opening your gift";
+  if (!nextEligibleAt) return "Earn a badge on your first visit";
+  const localTime = new Date(nextEligibleAt).toLocaleString(undefined, {
+    month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short",
+  });
+  return `Visit again after ${localTime}`;
 }
 
 /** v1 details for badges without a rig yet, drawn over the art on its own viewBox. */
@@ -210,17 +215,19 @@ function Shine({ id }: { id: string }) {
 export function Badges({
   earned = 0,
   opened = 0,
+  nextEligibleAt = 0,
   landed,
   onOpen,
 }: {
   earned?: number;
   opened?: number;
+  nextEligibleAt?: number;
   landed?: string;
   onOpen: (badge: BadgeDef, tile: HTMLElement) => void;
 }) {
   return BADGES.map((badge, index) => {
     if (index < opened) return <Badge key={badge.id} badge={badge} landed={badge.id === landed} />;
     if (index === opened && index < earned) return <Ready key={badge.id} onOpen={(tile) => onOpen(badge, tile)} />;
-    return <Mystery key={badge.id} badge={badge} hint={unlockHint(index, earned)} />;
+    return <Mystery key={badge.id} badge={badge} hint={unlockHint(index, earned, opened, nextEligibleAt)} />;
   });
 }

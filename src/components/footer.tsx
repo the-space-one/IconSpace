@@ -126,15 +126,11 @@ function SignpostArt() {
   );
 }
 
-// Each shelf sits this much further out toward its own screen edge than in the
-// Figma scene (scene units). The signpost and the forklift's route don't
-// follow, so the forklift now stops this much further short of the shelf.
-const SHELF_PUSH = 48;
-
 // Both shelves are one image, so each side clips it to its own half first.
+// Keep the original edge alignment: pushing the halves outward cuts off boxes.
 const SHELF_SIDES = {
-  left: { clipPath: "inset(0 50% 0 0)", translate: `-${SHELF_PUSH}px 0` },
-  right: { clipPath: "inset(0 0 0 50%)", translate: `${SHELF_PUSH}px 0` },
+  left: { clipPath: "inset(0 50% 0 0)" },
+  right: { clipPath: "inset(0 0 0 50%)" },
 } satisfies Record<string, CSSProperties>;
 
 /** One storage shelf, in scene units. Their outer sides are drawn open,
@@ -166,7 +162,8 @@ function ShelvesArt({ side }: { side: keyof typeof SHELF_SIDES }) {
 export function Footer() {
   return (
     <footer className="@container w-full overflow-clip">
-      <div className={`relative h-[calc(508px*var(--s))] ${SCALE}`}>
+      {/* The last ground band ends at 506.5, plus its 2px half-stroke. */}
+      <div className={`relative h-[calc(509px*var(--s))] ${SCALE}`}>
         <Ground />
         <div
           style={sceneLeft}
