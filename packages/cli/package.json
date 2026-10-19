@@ -14,7 +14,7 @@
   ],
   "type": "module",
   "bin": {
-    "iconspace": "./bin/iconspace.mjs"
+    "iconspace": "bin/iconspace.mjs"
   },
   "files": [
     "bin",
