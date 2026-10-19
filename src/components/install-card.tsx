@@ -176,6 +176,71 @@ function Segmented<T extends string>({
   );
 }
 
+/**
+ * Controls that take turns in one slot. All stay mounted in the same grid
+ * cell, so the incoming one is already laid out with its highlight in place:
+ * switching crossfades the labels while one shared well, clipped to the
+ * visible control's width, stretches or shrinks behind them. The slot is
+ * clipped to the same edge, so labels never show outside the well mid-resize.
+ * Until the first measurement each control draws its own well, so the server
+ * render is already correct.
+ */
+function Swap<T extends string>({ value, panes }: { value: T; panes: Record<T, ReactNode> }) {
+  const slot = useRef<HTMLDivElement>(null);
+  const well = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = slot.current;
+    const bg = well.current;
+    if (!el || !bg) return;
+    const measure = () => {
+      const pane = el.querySelector<HTMLElement>("[data-pane]:not([inert])");
+      if (!pane) return;
+      const right = el.offsetWidth - pane.offsetWidth;
+      bg.style.clipPath = `inset(0 ${right}px 0 0 round 12px)`;
+      // Loose on the other sides so focus rings and hit areas aren't cut.
+      el.style.clipPath = `inset(-8px ${right}px -8px -8px)`;
+      if (!el.dataset.ready) {
+        el.dataset.ready = "";
+        requestAnimationFrame(() => {
+          bg.classList.add("transition-[clip-path]");
+          el.classList.add("transition-[clip-path]");
+        });
+      }
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    el.querySelectorAll("[data-pane]").forEach((pane) => observer.observe(pane));
+    return () => observer.disconnect();
+  }, [value]);
+
+  // The well moves like the highlight; labels leave fast and arrive like the
+  // snippet below, a beat late so the two sets never sit on top of each other.
+  return (
+    <div
+      ref={slot}
+      className="group/swap relative grid w-full duration-[220ms] ease-[cubic-bezier(0.645,0.045,0.355,1)] @[31rem]:w-auto motion-reduce:transition-none"
+    >
+      <div
+        ref={well}
+        aria-hidden
+        className="absolute inset-0 rounded-[12px] bg-[#efefef] opacity-0 duration-[220ms] ease-[cubic-bezier(0.645,0.045,0.355,1)] group-data-ready/swap:opacity-100 motion-reduce:transition-none"
+      />
+      {(Object.keys(panes) as T[]).map((key) => (
+        <div
+          key={key}
+          data-pane
+          inert={key !== value}
+          className="relative col-start-1 row-start-1 w-full justify-self-start transition-[opacity,translate,filter] delay-[60ms] duration-[180ms] ease-out group-data-ready/swap:*:bg-transparent @[31rem]:w-auto inert:translate-y-0.5 inert:opacity-0 inert:blur-[2px] inert:delay-0 inert:duration-[120ms] motion-reduce:transition-none"
+        >
+          {panes[key]}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function InstallCard() {
   const [client, setClient] = useState<(typeof CLIENTS)[number]>("ChatGPT");
   const [mode, setMode] = useState<(typeof MODES)[number]>("CLI");
@@ -199,23 +264,26 @@ export function InstallCard() {
   }
 
   return (
-    <div className="@container flex w-full flex-col gap-1.5 rounded-[18px] bg-white p-1.5 font-froundy leading-5 shadow-[0_0_0_1px_rgba(59,59,59,0.06),0_1px_2px_rgba(16,16,40,0.06),0_14px_32px_-14px_rgba(0,0,0,0.18)]">
+    <div className="@container flex w-full flex-col gap-1.5 rounded-[18px] bg-white p-1.5 font-froundy leading-5 shadow-[0_0_0_1px_rgba(59,59,59,0.06)]">
       <div className="flex flex-wrap gap-1.5">
-        {mode === "MCP" ? (
-          <Segmented key="client" label="Client" options={CLIENTS} icons={CLIENT_ICONS} value={client} onChange={setClient} />
-        ) : (
-          <Segmented
-            key="manager"
-            label="Package manager"
-            options={MANAGERS}
-            icons={MANAGER_ICONS}
-            value={manager}
-            onChange={(next) => {
-              setManager(next);
-              setSwitched(true);
-            }}
-          />
-        )}
+        <Swap
+          value={mode}
+          panes={{
+            CLI: (
+              <Segmented
+                label="Package manager"
+                options={MANAGERS}
+                icons={MANAGER_ICONS}
+                value={manager}
+                onChange={(next) => {
+                  setManager(next);
+                  setSwitched(true);
+                }}
+              />
+            ),
+            MCP: <Segmented label="Client" options={CLIENTS} icons={CLIENT_ICONS} value={client} onChange={setClient} />,
+          }}
+        />
         <div className="w-full @[31rem]:ml-auto @[31rem]:w-auto">
           <Segmented
             label="Install method"

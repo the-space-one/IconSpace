@@ -143,18 +143,29 @@ function Gift() {
   );
 }
 
-/** An unearned badge: a "?" and no art at all, so the surprise stays a surprise. */
-function Mystery() {
+/** An unearned badge: only its silhouette and a "?", so there's something to
+ * look forward to without giving the art away. Hovering says when it unlocks. */
+function Mystery({ badge, hint }: { badge: BadgeDef; hint: string }) {
   return (
     <div
       role="img"
-      aria-label="Mystery badge"
-      title="Come back another day"
+      aria-label={`Mystery badge. ${hint}.`}
       className={`relative size-27.5 rounded-tile shadow-tile ${styles.tile} ${styles.mystery}`}
     >
-      <span aria-hidden className={styles.mark}>?</span>
+      <div aria-hidden style={badge.art} className={styles.silhouette}>
+        <span style={{ maskImage: `url(/badges/${badge.id}.svg)` }} className={styles.shape} />
+        <span className={styles.mark}>?</span>
+      </div>
+      <span aria-hidden className={styles.hint}>{hint}</span>
     </div>
   );
+}
+
+/** When a mystery tile unlocks: one badge a day, and only after the gift before it is opened. */
+function unlockHint(index: number, earned: number) {
+  if (index < earned) return "Open the gift first";
+  const days = index - earned + 1;
+  return days === 1 ? "Come back tomorrow" : `Come back in ${days} days`;
 }
 
 /** v1 details for badges without a rig yet, drawn over the art on its own viewBox. */
@@ -210,6 +221,6 @@ export function Badges({
   return BADGES.map((badge, index) => {
     if (index < opened) return <Badge key={badge.id} badge={badge} landed={badge.id === landed} />;
     if (index === opened && index < earned) return <Ready key={badge.id} onOpen={(tile) => onOpen(badge, tile)} />;
-    return <Mystery key={badge.id} />;
+    return <Mystery key={badge.id} badge={badge} hint={unlockHint(index, earned)} />;
   });
 }

@@ -51,7 +51,7 @@
   background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .75) 50%, transparent 70%);
 }
 
-/* Easter egg. Unearned badges are .mystery tiles with only a "?". The badge
+/* Easter egg. Unearned badges are .mystery tiles: a silhouette and a "?". The badge
    earned but not yet opened is a .ready button in the badges' own palette: a
    light brand tint, a brand-outline ring and a gift box that rattles now and
    then, like loot in a game. Clicking it ([data-opening]) shakes the gift
@@ -59,17 +59,46 @@
    lid off, pops the gift and fades the fill while the reward
    ceremony (badge-reward.tsx) flies the badge to the centre and back; it
    comes home as a [data-landed] tile with a squash and a burst. Nothing here
-   reaches outside the tile: the footer clips anything above the row. */
-.mark {
+   reaches above the tile: the footer clips anything above the row. */
+/* A mystery tile's silhouette takes the art's exact box and is cut from the
+   badge's own SVG, so it's the badge's outline and nothing inside it. The "?"
+   sits on the disc. */
+.silhouette { position: absolute; pointer-events: none; }
+.shape {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  background: color-mix(in oklch, var(--color-brand) 30%, white);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+.mark {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  translate: -50% -50%;
   font-family: var(--font-froundy);
-  font-size: 44px;
+  font-size: 36px;
   line-height: 1;
-  color: #c6c8f7;
+  color: #fff;
+}
+/* When it unlocks, under the tile (the footer clips above the row), at its
+   real size whatever the scene's scale. */
+.hint {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  translate: -50% -4px;
+  padding: .45em .8em;
+  border-radius: 999px;
+  background: #171717;
+  color: #fff;
+  font-family: var(--font-froundy);
+  font-size: calc(13px / var(--s, 1));
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 150ms ease, translate 200ms var(--settle);
 }
 .ready {
   appearance: none;
@@ -120,6 +149,10 @@
 .burst > span:nth-child(6) { --a: -140deg; }
 @media (prefers-reduced-motion: reduce) {
   .ready::before, .ready .glyph { transition: opacity 200ms ease-out; }
+  .hint { transition: opacity 150ms ease; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .mystery:hover .hint { opacity: 1; translate: -50% 0; transition-delay: 120ms; }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -130,7 +163,8 @@
   }
   .ready::before { transition: background-color 150ms ease; }
   .ready:hover::before { background: color-mix(in oklch, var(--color-brand) 30%, white); }
-  .mystery:hover .mark { animation: wiggle 400ms ease-in-out; }
+  /* Locked: a quick head-shake. */
+  .mystery:hover .silhouette { animation: locked 420ms var(--settle); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -337,10 +371,12 @@
   20% { opacity: 1; }
   100% { opacity: 0; transform: rotate(var(--a)) translateY(-64px) scale(.3); }
 }
-@keyframes wiggle {
-  0%, 100% { transform: none; }
-  25% { transform: rotate(-6deg); }
-  60% { transform: rotate(6deg); }
+@keyframes locked {
+  0%, 100% { translate: 0; }
+  20% { translate: -3px 0; }
+  40% { translate: 3px 0; }
+  60% { translate: -2px 0; }
+  80% { translate: 1px 0; }
 }
 @keyframes fade-out {
   from { opacity: 1; }

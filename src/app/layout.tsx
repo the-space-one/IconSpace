@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { OverlayScrollbar } from "@/components/overlay-scrollbar";
 import "./globals.css";
 
 const froundy = localFont({
@@ -44,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}
+        <OverlayScrollbar />
       </body>
     </html>
   );

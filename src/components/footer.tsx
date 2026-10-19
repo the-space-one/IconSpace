@@ -126,11 +126,22 @@ function SignpostArt() {
   );
 }
 
-/** Both storage shelves, in scene units. Their outer sides are drawn open,
+// Each shelf sits this much further out toward its own screen edge than in the
+// Figma scene (scene units). The signpost and the forklift's route don't
+// follow, so the forklift now stops this much further short of the shelf.
+const SHELF_PUSH = 48;
+
+// Both shelves are one image, so each side clips it to its own half first.
+const SHELF_SIDES = {
+  left: { clipPath: "inset(0 50% 0 0)", translate: `-${SHELF_PUSH}px 0` },
+  right: { clipPath: "inset(0 0 0 50%)", translate: `${SHELF_PUSH}px 0` },
+} satisfies Record<string, CSSProperties>;
+
+/** One storage shelf, in scene units. Their outer sides are drawn open,
  * because they're meant to run off the screen edge. */
-function ShelvesArt() {
+function ShelvesArt({ side }: { side: keyof typeof SHELF_SIDES }) {
   return (
-    <>
+    <div style={SHELF_SIDES[side]} className="absolute inset-0">
       <Image
         src="/footer/shelves.svg"
         alt=""
@@ -148,7 +159,7 @@ function ShelvesArt() {
         cats={SHELF_CATS}
         className="absolute top-[84px] left-[-190.53px] h-[553px] w-[1895.15px]"
       />
-    </>
+    </div>
   );
 }
 
@@ -169,7 +180,8 @@ export function Footer() {
 
             {/* From xl the shelves pin to the screen edges instead (below). */}
             <div className="xl:hidden">
-              <ShelvesArt />
+              <ShelvesArt side="left" />
+              <ShelvesArt side="right" />
             </div>
 
             {/* From xl the signpost and shelves sit out at the screen edges,
@@ -201,12 +213,12 @@ export function Footer() {
         <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[calc(756px*var(--s))] overflow-hidden xl:block">
           <div className="relative h-[508px] w-[1512px] origin-top-left scale-(--s)">
             <SignpostArt />
-            <ShelvesArt />
+            <ShelvesArt side="left" />
           </div>
         </div>
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[calc(756px*var(--s))] overflow-hidden xl:block">
           <div className="absolute top-0 right-0 h-[508px] w-[1512px] origin-top-right scale-(--s)">
-            <ShelvesArt />
+            <ShelvesArt side="right" />
           </div>
         </div>
       </div>

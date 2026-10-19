@@ -1,4 +1,4 @@
-import { useEffect, useRef, type SVGProps } from "react";
+import { useEffect, useEffectEvent, useRef, type SVGProps } from "react";
 import {
   motion,
   useAnimate,
@@ -144,7 +144,10 @@ const buildRingSequence = (): AnimationSequence => {
   ];
 };
 
-export function ClockIcon(props: SVGProps<SVGSVGElement>) {
+export function ClockIcon({ ringing, ...props }: SVGProps<SVGSVGElement> & {
+  /** Ring (true) and unwind (false) as if hovered, for a copy no pointer reaches. */
+  ringing?: boolean;
+}) {
   const [scope, animate] = useAnimate();
   const reduced = useReducedMotion();
   // The one-shot ring timeline. Kept so mouse-leave can reverse it and a
@@ -206,6 +209,11 @@ export function ClockIcon(props: SVGProps<SVGSVGElement>) {
       { duration: 0.2, ease: "easeOut" }
     );
   };
+
+  const follow = useEffectEvent((on: boolean) => (on ? handleMouseEnter() : handleMouseLeave()));
+  useEffect(() => {
+    if (ringing !== undefined) follow(ringing);
+  }, [ringing]);
 
   return (
     <svg

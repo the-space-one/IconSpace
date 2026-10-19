@@ -6,24 +6,26 @@ import { useIconPlayback } from "@/components/icon-playback";
 import { LabGlyph, SHELF_ICONS, shelfIcon } from "@/components/shelf-icons";
 import { Reflected, Shelf } from "@/components/shelf";
 
-// Every icon appears once, eight to a shelf; the last shelf holds the rest.
-const SLOTS = 8;
+// Every icon appears once, six to a shelf; the last shelf holds the rest.
+const SLOTS = 6;
 const SHELF_COUNT = Math.ceil(SHELF_ICONS.length / SLOTS);
 
 // Plank geometry from the original five-tile shelf (798 wide): 31px in, 120px
 // tiles, 35px apart, 27px out. Width grows by 155px per tile.
 const plankWidth = (count: number) => 23 + 155 * count;
 
-// Planks are sized against the hero art, not on their own, so the tiles keep
-// the illustration's proportions: a tile reads about as wide as the
-// shopkeeper's head. Stacked layout (< xl): fit the width, at most 0.75×.
-// Overlay layout (≥ xl): 0.66 of the hero's scale (min(1.5, W/1512)). Below a
-// 36rem container the eight tiles split into two planks of four, which keeps
-// them ≥ 54px on a 320px phone instead of ~34px. The scale is fixed to the
-// eight-tile width, so a shorter last shelf keeps the same tile size.
+// Planks are sized against the hero art, not on their own, so they keep in
+// step with the illustration as the page scales. Six bigger tiles span what
+// the original eight did (8 tiles at 0.66 ≈ 6 at 0.875). Stacked layout
+// (< xl): fit the width, at most 1×. Overlay layout (≥ xl): 0.875 of the
+// hero's scale (min(1.5, W/1512)). Below a 27rem container, where a full
+// plank's tiles would drop under 54px, the six tiles split into two planks of
+// three, which keeps them ≥ 54px on a 320px phone instead of ~36px. The scale
+// is fixed to the six-tile width, so a shorter last shelf keeps the same tile
+// size.
 const SCALE = {
-  long: "[--s:min(0.75,tan(atan2(100cqw,1263px)))] xl:[--s:calc(0.66*min(1.5,tan(atan2(100vw,1512px))))]",
-  half: "[--s:min(0.75,tan(atan2(100cqw,643px)))]",
+  long: "[--s:min(1,tan(atan2(100cqw,953px)))] xl:[--s:calc(0.875*min(1.5,tan(atan2(100vw,1512px))))]",
+  half: "[--s:min(0.75,tan(atan2(100cqw,488px)))]",
 };
 const tile = "relative flex size-30 items-center justify-center rounded-tile shadow-tile";
 
@@ -95,10 +97,10 @@ function IconShelf({ index }: { index: number }) {
   // Both layouts share instance ids, so a run plays in whichever is showing.
   return (
     <section ref={ref} data-motion-shelf className="@container w-full">
-      <div className="hidden @[36rem]:block">
+      <div className="hidden @[27rem]:block">
         <Plank slots={slots} scale={SCALE.long} />
       </div>
-      <div className="flex flex-col gap-6 @[36rem]:hidden">
+      <div className="flex flex-col gap-6 @[27rem]:hidden">
         <Plank slots={slots.slice(0, half)} scale={SCALE.half} />
         <Plank slots={slots.slice(half)} scale={SCALE.half} />
       </div>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { IconBubble } from "@/components/icon-bubble";
 
 const VIEW_BOX = "1381.5 369.5 143.5 304";
@@ -21,6 +21,32 @@ const LAMPS = [
   { left: 69.5, top: 13.5, delay: "-1.3s" },
   { left: 111.5, top: 14.5, delay: "-2.1s" },
 ];
+
+// Each cone is 10 wide at the lens and widens 0.24 per unit on each side,
+// long enough to reach the shelf from any lamp at any point of its sway.
+// The window clips the rest: inside the left post and top bar, down to the
+// shelf the cat sits on (static.svg's inner edges, in scene units).
+const BEAM = { length: 260, lens: 10, spread: 0.24 };
+const BEAM_WIDTH = BEAM.lens + 2 * BEAM.spread * BEAM.length;
+const BEAM_INSET = ((1 - BEAM.lens / BEAM_WIDTH) / 2) * 100;
+const GLASS = { top: 15, bottom: 214, left: 13.5 };
+
+function Swing({ lamp, children }: { lamp: (typeof LAMPS)[number]; children: ReactNode }) {
+  return (
+    <div
+      style={{
+        left: lamp.left,
+        top: lamp.top,
+        width: LAMP.width,
+        height: LAMP.height,
+        animationDelay: lamp.delay,
+      }}
+      className="absolute origin-[3.7px_1px] animate-lamp-sway motion-reduce:animate-none"
+    >
+      {children}
+    </div>
+  );
+}
 
 function Layer({ src, style }: { src: string; style?: CSSProperties }) {
   return (
@@ -95,26 +121,31 @@ export function WindowScene() {
 
         <Layer src="/hero/window/static.svg" />
 
+        {/* The light, one layer for all three cones so the window can clip it;
+            each cone swings in step with its lamp, drawn above. */}
+        <div
+          style={{ clipPath: `inset(${GLASS.top}px 0 ${304 - GLASS.bottom}px ${GLASS.left}px)` }}
+          className="absolute inset-0 mix-blend-multiply"
+        >
+          {LAMPS.map((lamp) => (
+            <Swing key={lamp.left} lamp={lamp}>
+              <div
+                style={{
+                  left: LAMP.lens[0] - BEAM_WIDTH / 2,
+                  top: LAMP.lens[1] - 1,
+                  width: BEAM_WIDTH,
+                  height: BEAM.length,
+                  clipPath: `polygon(${BEAM_INSET}% 0, ${100 - BEAM_INSET}% 0, 100% 100%, 0 100%)`,
+                  animationDelay: lamp.delay,
+                }}
+                className="absolute origin-top rotate-[-30.6deg] animate-lamp-glow bg-linear-to-b from-[rgba(255,210,90,0.18)] to-[rgba(255,210,90,0.08)] motion-reduce:animate-none"
+              />
+            </Swing>
+          ))}
+        </div>
+
         {LAMPS.map((lamp) => (
-          <div
-            key={lamp.left}
-            style={{
-              left: lamp.left,
-              top: lamp.top,
-              width: LAMP.width,
-              height: LAMP.height,
-              animationDelay: lamp.delay,
-            }}
-            className="absolute origin-[3.7px_1px] animate-lamp-sway motion-reduce:animate-none"
-          >
-            <div
-              style={{
-                left: LAMP.lens[0] - 22,
-                top: LAMP.lens[1] - 1,
-                animationDelay: lamp.delay,
-              }}
-              className="absolute h-[70px] w-[44px] origin-top -rotate-[30.6deg] animate-lamp-glow bg-[rgba(255,210,90,0.16)] mix-blend-multiply [clip-path:polygon(38.6%_0,61.4%_0,100%_100%,0_100%)] motion-reduce:animate-none"
-            />
+          <Swing key={lamp.left} lamp={lamp}>
             <Image
               src={LAMP.src}
               alt=""
@@ -123,7 +154,7 @@ export function WindowScene() {
               fetchPriority="low"
               className="relative max-w-none"
             />
-          </div>
+          </Swing>
         ))}
       </div>
     </div>

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@rive-app/canvas-lite": "^2.45.0",
     "motion": "^12.42.2",
     "next": "16.2.10",
     "react": "19.2.4",
@@ -21,6 +22,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "svgpath": "^2.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

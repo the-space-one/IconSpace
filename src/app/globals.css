@@ -372,6 +372,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* The page's own scrollbar is hidden, so it never takes width from the page;
+   <OverlayScrollbar> draws one over the content instead. Inner scrollers keep
+   a native one, slim on a clear track. */
+:root {
+  scrollbar-width: none;
+  scrollbar-color: #d4d4d4 transparent;
+}
+:root::-webkit-scrollbar {
+  display: none;
+}
+
 @theme {
   --animate-laptop-jolt: laptop-jolt 6s infinite;
   --animate-cat-paw-bang: cat-paw-bang 6s infinite;

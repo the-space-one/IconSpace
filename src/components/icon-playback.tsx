@@ -8,7 +8,8 @@ import { TIMING, type MotionRun, type PreviewTarget } from "./icon-motion";
 
 type Source = "hover" | "focus" | "touch";
 type Runs = Record<string, MotionRun>;
-type Selection = { target: PreviewTarget | null; shown: boolean };
+/** What the hero's speech bubble shows; `run` restarts it each time it opens on an icon. */
+type Selection = { target: PreviewTarget | null; shown: boolean; run?: MotionRun };
 type Playback = {
   runs: Runs;
   selection: Selection;
@@ -40,12 +41,20 @@ export function IconPlaybackProvider({ children }: { children: ReactNode }) {
   const reduced = useRef(true); // fail safely until the media query is known
   const serial = useRef(0);
 
+  const shownSelection = useRef<Selection>({ target: null, shown: false });
+
   const publishSelection = useCallback(() => {
     const target = sources.current.hover ?? sources.current.focus ?? sources.current.touch;
-    setSelection((last) => {
-      if (last.shown === Boolean(target) && (!target || last.target?.instanceId === target.instanceId)) return last;
-      return { target: target ?? last.target, shown: Boolean(target) };
-    });
+    const last = shownSelection.current;
+    if (last.shown === Boolean(target) && (!target || last.target?.instanceId === target.instanceId)) return;
+    // Opening on an icon (or switching to another) gives the bubble a run of
+    // its own, so it plays even while that icon's tile is mid-run and won't.
+    const opens = Boolean(target) && (!last.shown || last.target?.instanceId !== target?.instanceId);
+    const run = opens && !reduced.current && !document.hidden
+      ? { id: ++serial.current, startedAt: performance.now() }
+      : last.run;
+    shownSelection.current = { target: target ?? last.target, shown: Boolean(target), run };
+    setSelection(shownSelection.current);
   }, []);
 
   const preview = useCallback((source: Source, target: PreviewTarget, shown: boolean) => {
