@@ -1,0 +1,30 @@
+{
+  "name": "iconspace",
+  "version": "0.1.0",
+  "description": "Add IconSpace animated icons to your React project, and connect your AI tools to the IconSpace MCP server.",
+  "homepage": "https://iconspace.dev",
+  "keywords": [
+    "icons",
+    "animated-icons",
+    "react",
+    "motion",
+    "cli",
+    "mcp",
+    "iconspace"
+  ],
+  "type": "module",
+  "bin": {
+    "iconspace": "./bin/iconspace.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@clack/prompts": "1.8.1"
+  }
+}

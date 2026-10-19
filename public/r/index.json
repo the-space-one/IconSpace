@@ -1,0 +1,651 @@
+{
+  "name": "iconspace",
+  "homepage": "https://iconspace.dev",
+  "icons": [
+    {
+      "id": "library-2",
+      "name": "Library 2",
+      "component": "BookFlipSlowIcon",
+      "file": "BookFlipIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "book",
+        "read",
+        "docs",
+        "pages",
+        "library"
+      ]
+    },
+    {
+      "id": "cart",
+      "name": "Cart",
+      "component": "CartIcon",
+      "file": "CartIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "shopping",
+        "checkout",
+        "basket",
+        "store",
+        "buy"
+      ]
+    },
+    {
+      "id": "clock",
+      "name": "Clock",
+      "component": "ClockIcon",
+      "file": "ClockIcon.tsx",
+      "interactive": true,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "time",
+        "alarm",
+        "hour",
+        "schedule",
+        "timer"
+      ]
+    },
+    {
+      "id": "discount",
+      "name": "Discount",
+      "component": "DiscountIcon",
+      "file": "DiscountIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "sale",
+        "percent",
+        "coupon",
+        "offer",
+        "badge"
+      ]
+    },
+    {
+      "id": "email",
+      "name": "Email",
+      "component": "EmailIcon",
+      "file": "EmailIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "mail",
+        "envelope",
+        "inbox",
+        "message",
+        "letter"
+      ]
+    },
+    {
+      "id": "search-3d",
+      "name": "Search 3D",
+      "component": "Search3DIcon",
+      "file": "Search3DIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "search",
+        "find",
+        "magnifier",
+        "zoom",
+        "lookup"
+      ]
+    },
+    {
+      "id": "globe",
+      "name": "Globe",
+      "component": "GlobeSpinIcon",
+      "file": "GlobeSpinIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "world",
+        "web",
+        "internet",
+        "language",
+        "global"
+      ]
+    },
+    {
+      "id": "macbook",
+      "name": "MacBook",
+      "component": "MacbookIcon",
+      "file": "MacbookIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "laptop",
+        "computer",
+        "device",
+        "notebook"
+      ]
+    },
+    {
+      "id": "play",
+      "name": "Play",
+      "component": "PlayIcon",
+      "file": "PlayIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "video",
+        "media",
+        "start",
+        "player"
+      ]
+    },
+    {
+      "id": "focus",
+      "name": "Focus",
+      "component": "FocusIcon",
+      "file": "FocusIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "target",
+        "camera",
+        "frame",
+        "scan",
+        "capture"
+      ]
+    },
+    {
+      "id": "ticket",
+      "name": "Ticket",
+      "component": "TicketIcon",
+      "file": "TicketIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "event",
+        "pass",
+        "admission",
+        "coupon",
+        "voucher"
+      ]
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "component": "LightningIcon",
+      "file": "LightningIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "bolt",
+        "flash",
+        "power",
+        "energy",
+        "fast"
+      ]
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "component": "HomeIcon",
+      "file": "HomeIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "house",
+        "dashboard",
+        "start"
+      ]
+    },
+    {
+      "id": "home-door",
+      "name": "Home Door",
+      "component": "HomeDoorIcon",
+      "file": "HomeDoorIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "house",
+        "door",
+        "enter",
+        "home"
+      ]
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "component": "GithubIcon",
+      "file": "GithubIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "git",
+        "code",
+        "repository",
+        "octocat",
+        "open source"
+      ]
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "component": "SettingsPreviewIcon",
+      "file": "SettingsIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "gear",
+        "cog",
+        "preferences",
+        "options",
+        "config"
+      ]
+    },
+    {
+      "id": "settings-slider",
+      "name": "Settings Slider",
+      "component": "SettingsSliderPreviewIcon",
+      "file": "SettingsSliderIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "sliders",
+        "filters",
+        "controls",
+        "adjust",
+        "preferences"
+      ]
+    },
+    {
+      "id": "bell",
+      "name": "Bell",
+      "component": "BellIcon",
+      "file": "BellIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "notification",
+        "alert",
+        "ring",
+        "reminder"
+      ]
+    },
+    {
+      "id": "coin",
+      "name": "Coin",
+      "component": "CoinIcon",
+      "file": "CoinIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "money",
+        "dollar",
+        "payment",
+        "currency",
+        "price"
+      ]
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar",
+      "component": "CalendarIcon",
+      "file": "CalendarIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "date",
+        "schedule",
+        "event",
+        "day"
+      ]
+    },
+    {
+      "id": "calendar-2",
+      "name": "Calendar 2",
+      "component": "Calendar2Icon",
+      "file": "Calendar2Icon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "date",
+        "schedule",
+        "event",
+        "planner"
+      ]
+    },
+    {
+      "id": "key",
+      "name": "Key",
+      "component": "KeyIcon",
+      "file": "KeyIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "password",
+        "access",
+        "unlock",
+        "auth",
+        "security"
+      ]
+    },
+    {
+      "id": "compass",
+      "name": "Compass",
+      "component": "CompassIcon",
+      "file": "CompassIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "navigate",
+        "explore",
+        "direction",
+        "discover"
+      ]
+    },
+    {
+      "id": "scan",
+      "name": "Scan",
+      "component": "ScanIcon",
+      "file": "ScanIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "qr",
+        "frame",
+        "capture",
+        "focus",
+        "fullscreen"
+      ]
+    },
+    {
+      "id": "gem",
+      "name": "Gem",
+      "component": "GemIcon",
+      "file": "GemIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "diamond",
+        "premium",
+        "pro",
+        "jewel",
+        "value"
+      ]
+    },
+    {
+      "id": "sparkle",
+      "name": "Sparkle",
+      "component": "SparkleIcon",
+      "file": "SparkleIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "ai",
+        "magic",
+        "stars",
+        "new",
+        "shine"
+      ]
+    },
+    {
+      "id": "arrow",
+      "name": "Arrow",
+      "component": "ArrowIcon",
+      "file": "ArrowIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "right",
+        "next",
+        "forward",
+        "go"
+      ]
+    },
+    {
+      "id": "lock",
+      "name": "Lock",
+      "component": "LockIcon",
+      "file": "LockIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "secure",
+        "private",
+        "password",
+        "padlock",
+        "security"
+      ]
+    },
+    {
+      "id": "eye",
+      "name": "Eye",
+      "component": "EyeIcon",
+      "file": "EyeIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "view",
+        "visible",
+        "show",
+        "watch",
+        "preview"
+      ]
+    },
+    {
+      "id": "call",
+      "name": "Call",
+      "component": "CallIcon",
+      "file": "CallIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "phone",
+        "telephone",
+        "contact",
+        "ring"
+      ]
+    },
+    {
+      "id": "heart-2",
+      "name": "Heart 2",
+      "component": "Heart2Icon",
+      "file": "Heart2Icon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "like",
+        "love",
+        "favorite"
+      ]
+    },
+    {
+      "id": "trash",
+      "name": "Trash",
+      "component": "TrashIcon",
+      "file": "TrashIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "delete",
+        "remove",
+        "bin",
+        "garbage"
+      ]
+    },
+    {
+      "id": "paper-plane",
+      "name": "Paper Plane",
+      "component": "PaperPlaneIcon",
+      "file": "PaperPlaneIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "send",
+        "submit",
+        "message",
+        "share"
+      ]
+    },
+    {
+      "id": "mic",
+      "name": "Mic",
+      "component": "MicIcon",
+      "file": "MicIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "microphone",
+        "voice",
+        "record",
+        "audio",
+        "speak"
+      ]
+    },
+    {
+      "id": "pen-line",
+      "name": "Pen Line",
+      "component": "PenLineIcon",
+      "file": "PenLineIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "edit",
+        "write",
+        "pencil",
+        "sign"
+      ]
+    },
+    {
+      "id": "brush",
+      "name": "Brush",
+      "component": "BrushIcon",
+      "file": "BrushIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "paint",
+        "design",
+        "art",
+        "draw",
+        "theme"
+      ]
+    },
+    {
+      "id": "globe-morph",
+      "name": "Globe Morph",
+      "component": "GlobeMorphIcon",
+      "file": "GlobeMorphIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "world",
+        "web",
+        "internet",
+        "global"
+      ]
+    },
+    {
+      "id": "code",
+      "name": "Code",
+      "component": "CodeIcon",
+      "file": "CodeIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "developer",
+        "brackets",
+        "html",
+        "embed",
+        "programming"
+      ]
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "component": "EarthIcon",
+      "file": "EarthIcon.tsx",
+      "interactive": false,
+      "dependencies": [
+        "motion@^12.42.2"
+      ],
+      "keywords": [
+        "world",
+        "planet",
+        "global",
+        "map"
+      ]
+    }
+  ]
+}
