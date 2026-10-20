@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { CuriousMascot } from "@/components/curious-mascot";
 import { MascotPeek } from "@/components/mascot-peek";
+import { ProjectsMenu } from "@/components/projects-menu";
 
 // The remote of ~/Desktop/Icon-Waitlist.
 const GITHUB_URL = "https://github.com/the-space-one/IconSpace";
@@ -13,20 +13,7 @@ export function Navbar() {
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <button
-          type="button"
-          className="flex h-9 items-center justify-center gap-1.5 overflow-clip rounded-lg bg-white px-3 py-2 text-sm leading-5 text-foreground shadow-[0_0_0_1px_rgba(0,0,0,0.1),0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-surface"
-        >
-          Browse Projects
-          <Image
-            src="/nav/chevron-down.svg"
-            alt=""
-            width={10}
-            height={11}
-            loading="eager"
-            className="-mx-[0.75px] h-[11px] w-[9.5px] max-w-none"
-          />
-        </button>
+        <ProjectsMenu />
 
         {/* Room for the peeking cat, which hangs off the button's right edge. */}
         <div className="pr-[19.66px]">
