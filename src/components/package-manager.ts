@@ -8,11 +8,11 @@ import { useSyncExternalStore } from "react";
 export const MANAGERS = ["npm", "pnpm", "yarn", "bun"] as const;
 export type Manager = (typeof MANAGERS)[number];
 
-/** What runs a package without installing it, per manager. */
+/** What runs the CLI, per manager. Yarn 1 has no dlx, so Yarn installs it first. */
 export const RUNNERS: Record<Manager, string> = {
   npm: "npx",
   pnpm: "pnpm dlx",
-  yarn: "yarn dlx",
+  yarn: "yarn add -D iconspace && yarn",
   bun: "bunx",
 };
 

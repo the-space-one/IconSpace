@@ -14,7 +14,8 @@ export type PackageManager = (typeof PACKAGE_MANAGERS)[number];
 const RUNNERS: Record<PackageManager, string> = {
   npm: "npx",
   pnpm: "pnpm dlx",
-  yarn: "yarn dlx",
+  // Yarn 1 has no dlx, so Yarn installs the CLI first.
+  yarn: "yarn add -D iconspace && yarn",
   bun: "bunx",
 };
 
