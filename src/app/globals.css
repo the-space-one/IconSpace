@@ -65,7 +65,7 @@
      22–24s   holds
      It always faces the shelf and backs away rather than turning round, so
      nothing ever mirrors. --drive is the distance to that shelf (552px in the
-     scene; the footer stretches it when the shelf sits at the screen edge). */
+     Figma scene; the footer sets it from where the shelf actually sits). */
   @keyframes forklift-drive {
     0%,
     4% {

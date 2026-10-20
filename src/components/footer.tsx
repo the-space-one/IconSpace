@@ -126,15 +126,24 @@ function SignpostArt() {
   );
 }
 
-// Both shelves are one image, so each side clips it to its own half first.
-// Keep the original edge alignment: pushing the halves outward cuts off boxes.
+// Each shelf's outermost box sits this far (scene units) inside its screen
+// edge, so no box is cut. As placed in the Figma scene, the left shelf's boxes
+// start at x = 18.47 and the right's end at 1509.38.
+const BOX_MARGIN = 16;
+const SHELF_SHIFT = { left: BOX_MARGIN - 18.47, right: 1512 - BOX_MARGIN - 1509.38 };
+
+// Both shelves are one image, so each side clips it to its own half first,
+// leaving its outer side unclipped for the planks.
 const SHELF_SIDES = {
-  left: { clipPath: "inset(0 50% 0 0)" },
-  right: { clipPath: "inset(0 0 0 50%)" },
+  left: { clipPath: "inset(0 50% 0 -100%)", translate: `${SHELF_SHIFT.left}px 0` },
+  right: { clipPath: "inset(0 -100% 0 50%)", translate: `${SHELF_SHIFT.right}px 0` },
 } satisfies Record<string, CSSProperties>;
 
-/** One storage shelf, in scene units. Their outer sides are drawn open,
- * because they're meant to run off the screen edge. */
+// The forklift drives to the right shelf, so its route moves with it.
+const forkliftRoute = { "--to-shelf": `${552 + SHELF_SHIFT.right}px` } as CSSProperties;
+
+/** One storage shelf, in scene units. Its outer side is drawn open, the
+ * planks running on to the art's edge, so they always run off the screen. */
 function ShelvesArt({ side }: { side: keyof typeof SHELF_SIDES }) {
   return (
     <div style={SHELF_SIDES[side]} className="absolute inset-0">
@@ -185,7 +194,10 @@ export function Footer() {
                 --edge (scene units) away from the scene. The forklift parks
                 that much further left, beside the signpost, and drives that
                 much further right, to the shelf. */}
-            <div className="absolute top-[277.65px] left-[496px] animate-forklift-drive motion-reduce:animate-none xl:left-[calc(496px_-_var(--edge))] xl:[--drive:calc(552px_+_2*var(--edge))]">
+            <div
+              style={forkliftRoute}
+              className="absolute top-[277.65px] left-[496px] animate-forklift-drive [--drive:var(--to-shelf)] motion-reduce:animate-none xl:left-[calc(496px_-_var(--edge))] xl:[--drive:calc(var(--to-shelf)_+_2*var(--edge))]"
+            >
               {EXHAUST_DELAYS.map((delay) => (
                 <span
                   key={delay}
