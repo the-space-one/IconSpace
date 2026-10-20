@@ -1,3 +1,4 @@
+import { Basket } from "@/components/basket";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { IconShelves } from "@/components/icon-shelf";
@@ -19,6 +20,7 @@ export default function Home() {
       <div className="mt-auto pt-24">
         <Footer />
       </div>
+      <Basket />
     </div>
   );
 }

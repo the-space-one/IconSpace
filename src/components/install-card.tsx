@@ -1,18 +1,12 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { MANAGERS, RUNNERS, setManager, useManager } from "@/components/package-manager";
 
 const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grokbot"] as const;
 const MODES = ["CLI", "MCP"] as const;
-const MANAGERS = ["npm", "pnpm", "yarn", "bun"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
-const CLI_COMMANDS: Record<(typeof MANAGERS)[number], string> = {
-  npm: "npx iconspace add cart",
-  pnpm: "pnpm dlx iconspace add cart",
-  yarn: "yarn dlx iconspace add cart",
-  bun: "bunx iconspace add cart",
-};
 
 // Card radius 18 = well/track radius 12 + card padding 6;
 // thumb radius 8 = track radius 12 + track padding 4.
@@ -244,13 +238,13 @@ function Swap<T extends string>({ value, panes }: { value: T; panes: Record<T, R
 export function InstallCard() {
   const [client, setClient] = useState<(typeof CLIENTS)[number]>("ChatGPT");
   const [mode, setMode] = useState<(typeof MODES)[number]>("CLI");
-  const [manager, setManager] = useState<(typeof MANAGERS)[number]>("npm");
+  const manager = useManager();
   const [copied, setCopied] = useState(false);
   // The snippet only animates when the reader switches it, not on page load.
   const [switched, setSwitched] = useState(false);
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const snippet = mode === "MCP" ? MCP_URL : CLI_COMMANDS[manager];
+  const snippet = mode === "MCP" ? MCP_URL : `${RUNNERS[manager]} iconspace add cart`;
 
   async function copy() {
     try {

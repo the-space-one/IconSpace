@@ -1,0 +1,36 @@
+/* The ticket's DOM half (the paper itself is WebGL, receipt-paper.ts).
+   .mouth is the slot in the dock's top edge the paper comes out of; .grip
+   lies over the paper's resting place and takes the pointer and keyboard. */
+
+/* The paper's right edge sits 22px in from the dock's, clear of its rounded
+   corner, so the slot runs along the straight part of the edge; the mouth is
+   5px wider each side. */
+.mouth {
+  position: absolute;
+  top: -1.5px;
+  right: 17px;
+  width: 158px;
+  height: 3px;
+  border-radius: 2px;
+  background: #1c1c1c;
+  pointer-events: none;
+  transition: opacity 150ms ease-out;
+}
+@starting-style {
+  .mouth { opacity: 0; }
+}
+.mouth[data-closing] { opacity: 0; }
+
+.grip {
+  position: absolute;
+  right: 22px;
+  bottom: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none; /* a drag tears the paper, not scrolls the page */
+}
+.grip:active { cursor: grabbing; }
+.grip[data-done] { cursor: default; }
+.grip:focus-visible { outline: 2px solid #0a0a0a; outline-offset: 3px; }
