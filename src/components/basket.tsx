@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "motion/react";
 import { basket, useBasket, type Toss } from "@/components/basket-store";
@@ -75,8 +75,17 @@ const RESIZE = { type: "spring", duration: 0.4, bounce: 0.15 } as const;
 const POP = { type: "spring", duration: 0.3, bounce: 0.35 } as const;
 const OUT = [0.23, 1, 0.32, 1] as const; // out-quint
 
-const SLOTS = 5; // icons the dock shows; the rest are counted in a "+N"
-const MINI = 20; // their glyph size in px (tile glyphs are 60)
+const MINI = 20; // the slots' glyph size in px (tile glyphs are 60)
+
+// Icons the dock shows; the rest are counted in a "+N". Phones hide the
+// command, but the row still has to fit beside the basket and Copy: five
+// slots need a 375px screen, four 340px.
+const subscribeResize = (listener: () => void) => {
+  addEventListener("resize", listener);
+  return () => removeEventListener("resize", listener);
+};
+const slotsThatFit = () => (innerWidth >= 375 ? 5 : innerWidth >= 340 ? 4 : 3);
+const useSlots = () => useSyncExternalStore(subscribeResize, slotsThatFit, () => 5);
 
 type Point = { x: number; y: number };
 type Receipt = {
@@ -313,6 +322,7 @@ function BasketGlyph() {
 export function Basket() {
   const { items, tosses } = useBasket();
   const manager = useManager();
+  const slots = useSlots();
   const root = useRef<HTMLDivElement>(null);
   const basketGlyph = useRef<HTMLSpanElement>(null);
   const [runs, setRuns] = useState<Record<string, MotionRun>>({});
@@ -326,14 +336,14 @@ export function Basket() {
   const list = items;
   const command = `${RUNNERS[manager]} iconspace add ${list.join(" ")}`;
   const flying = new Set(tosses.map((toss) => toss.id));
-  const shown = list.slice(0, SLOTS);
+  const shown = list.slice(0, slots);
   const extra = list.length - shown.length;
   const count = `${list.length} icon${list.length === 1 ? "" : "s"}`;
 
   const target = (id: string) => {
     const dock = root.current;
     const index = items.indexOf(id);
-    const slot = dock?.querySelector<HTMLElement>(index >= 0 && index < SLOTS ? `[data-slot="${id}"]` : "[data-slot-more]");
+    const slot = dock?.querySelector<HTMLElement>(index >= 0 && index < slots ? `[data-slot="${id}"]` : "[data-slot-more]");
     return dock && slot ? restingCentre(slot, dock) : null;
   };
 
@@ -453,7 +463,10 @@ export function Basket() {
               exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, transition: { duration: 0.2, ease: OUT } }}
               transition={{ layout: reduce ? { duration: 0 } : RESIZE, default: { duration: 0.3, ease: OUT } }}
               style={{ borderRadius: 18, boxShadow: "0 0 0 1px rgba(59,59,59,0.08), 0 12px 32px -12px rgba(0,0,0,0.25)" }}
-              className="group/dock pointer-events-auto relative flex max-w-full items-center gap-2 bg-white p-1.5 pl-2.5 font-froundy leading-5"
+              // At least as wide as the receipt's slot (basket.module.css:
+              // 148px of paper, 22px in from each side), which a phone's dock,
+              // without the command, can fall short of; Copy keeps to the right.
+              className="group/dock pointer-events-auto relative flex max-w-full min-w-48 items-center gap-2 bg-white p-1.5 pl-2.5 font-froundy leading-5"
             >
               {receipt && (
                 <ReceiptPaper key={receipt.key} receipt={receipt} onKeep={keep} onHold={hold} onGone={() => setReceipt(null)} />
@@ -536,7 +549,7 @@ export function Basket() {
 
               <motion.button layout="position" type="button" aria-label={`Copy the install command for ${count}`}
                 onClick={(event) => copy(event.detail === 0)}
-                className="relative grid h-8 shrink-0 cursor-pointer place-items-center rounded-[10px] bg-brand px-3 text-[13px] text-brand-foreground shadow-[inset_0_0_0_2px_var(--color-brand-strong)] transition-[background-color,scale] duration-150 ease-out after:absolute after:-inset-1.5 hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground active:scale-[0.97] motion-reduce:transition-none"
+                className="relative ml-auto grid h-8 shrink-0 cursor-pointer place-items-center rounded-[10px] bg-brand px-3 text-[13px] text-brand-foreground shadow-[inset_0_0_0_2px_var(--color-brand-strong)] transition-[background-color,scale] duration-150 ease-out after:absolute after:-inset-1.5 hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground active:scale-[0.97] motion-reduce:transition-none"
               >
                 <span data-hidden={copied || undefined}
                   className="col-start-1 row-start-1 transition-[opacity,scale,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] data-hidden:scale-75 data-hidden:opacity-0 data-hidden:blur-[2px] motion-reduce:transition-none">

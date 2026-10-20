@@ -15,6 +15,15 @@ const item =
 const pillItem =
   "relative flex h-7 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold tracking-wide whitespace-nowrap uppercase @[31rem]:flex-none after:absolute after:inset-x-0 after:-inset-y-1.5";
 
+// Four labels with their icons outgrow a phone's card (at phone padding the
+// managers need 265px, the clients 341px), so below these widths inside the
+// card the icons are left out. Both rows share one slot, so the wider sets
+// its width.
+const ICONS_FROM = {
+  managers: "hidden @[17rem]:contents",
+  clients: "hidden @[22rem]:contents",
+};
+
 const CLIENT_ICONS: Record<(typeof CLIENTS)[number], ReactNode> = {
   ChatGPT: (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-4 shrink-0">
@@ -104,6 +113,7 @@ function Segmented<T extends string>({
   value,
   onChange,
   icons,
+  iconsFrom = "contents",
   pill = false,
 }: {
   label: string;
@@ -111,9 +121,12 @@ function Segmented<T extends string>({
   value: T;
   onChange: (value: T) => void;
   icons?: Record<T, ReactNode>;
+  /** Shows the icons only from a card width (see ICONS_FROM). */
+  iconsFrom?: string;
   pill?: boolean;
 }) {
   const cell = pill ? pillItem : item;
+  const icon = (option: T) => icons && <span className={iconsFrom}>{icons[option]}</span>;
   const radius = pill ? "999px" : "8px";
   const track = useRef<HTMLDivElement>(null);
   const highlight = useRef<HTMLDivElement>(null);
@@ -150,7 +163,7 @@ function Segmented<T extends string>({
           onClick={() => onChange(option)}
           className={`${cell} cursor-pointer text-muted-foreground transition-[color] duration-150 ease-out hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-black/50 aria-pressed:bg-white aria-pressed:text-foreground group-data-ready/seg:aria-pressed:bg-transparent`}
         >
-          {icons?.[option]}
+          {icon(option)}
           {option}
         </button>
       ))}
@@ -161,7 +174,7 @@ function Segmented<T extends string>({
       >
         {options.map((option) => (
           <span key={option} className={`${cell} text-foreground`}>
-            {icons?.[option]}
+            {icon(option)}
             {option}
           </span>
         ))}
@@ -268,6 +281,7 @@ export function InstallCard() {
                 label="Package manager"
                 options={MANAGERS}
                 icons={MANAGER_ICONS}
+                iconsFrom={ICONS_FROM.managers}
                 value={manager}
                 onChange={(next) => {
                   setManager(next);
@@ -275,7 +289,10 @@ export function InstallCard() {
                 }}
               />
             ),
-            MCP: <Segmented label="Client" options={CLIENTS} icons={CLIENT_ICONS} value={client} onChange={setClient} />,
+            MCP: (
+              <Segmented label="Client" options={CLIENTS} icons={CLIENT_ICONS} iconsFrom={ICONS_FROM.clients}
+                value={client} onChange={setClient} />
+            ),
           }}
         />
         <div className="w-full @[31rem]:ml-auto @[31rem]:w-auto">

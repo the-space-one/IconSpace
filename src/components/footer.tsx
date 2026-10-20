@@ -13,22 +13,31 @@ const SCALE =
   "[--s:max(tan(atan2(100cqw,1512px)),min(tan(atan2(100cqw,780px)),0.55))] xl:[--s:calc(0.72*min(1.5,tan(atan2(100cqw,1512px))))] xl:[--edge:calc((100cqw_-_1512px*var(--s))_/_(2*var(--s)))]";
 
 // Centres the scene; when it's wider than the viewport, keeps x=656 in the
-// middle so the signpost and all four badges stay in frame.
+// middle so the signpost stays in frame. (The badges centre on their own.)
 const sceneLeft = {
   left: "max((100% - 1512px * var(--s)) / 2, min(0px, max(100% - 1512px * var(--s), 50% - 656px * var(--s))))",
 } as CSSProperties;
 
 /* Ground, redrawn from the shelves art as repeating bands so it can run edge to
- * edge: a cross-hatched grass band over two hatched soil bands, 4px strokes,
+ * edge: a cross-hatched grass band over rows of hatched soil, 4px strokes,
  * hatch every 10.5 units at the original 19:28.5 slant. Scene units (y = 416
- * is the floor line the shelves, signpost and forklift stand on). */
+ * is the floor line the shelves, signpost and forklift stand on). The art has
+ * two soil rows; more run on below them for when the footer is deeper. */
 const HATCH = { gap: 10.5, run: 19, depth: 28.5 };
 const BANDS = [
   { y: 416, lean: "back", color: "#b8d4a8" },
   { y: 418, lean: "forward", color: "#b8d4a8" },
-  { y: 448, lean: "back", color: "#563724" },
-  { y: 478, lean: "forward", color: "#563724" },
-] as const;
+  ...Array.from({ length: 8 }, (_, row) =>
+    ({ y: 448 + 30 * row, lean: row % 2 ? "forward" : "back", color: "#563724" }) as const),
+];
+
+// Deep enough below the floor line for the basket dock (basket.tsx: 44px
+// tall, max(1rem, safe area) up, 1.5rem from sm) to sit on the soil with
+// 12px to spare rather than over the scene, which it would on phones;
+// otherwise to the end of the art's second soil row (506.5, plus its 2px
+// half-stroke).
+const HEIGHT =
+  "[--dock:calc(max(1rem,env(safe-area-inset-bottom))+56px)] sm:[--dock:80px] h-[max(509px*var(--s),416px*var(--s)+var(--dock))]";
 
 function Ground() {
   return (
@@ -171,8 +180,7 @@ function ShelvesArt({ side }: { side: keyof typeof SHELF_SIDES }) {
 export function Footer() {
   return (
     <footer className="@container w-full overflow-clip">
-      {/* The last ground band ends at 506.5, plus its 2px half-stroke. */}
-      <div className={`relative h-[calc(509px*var(--s))] ${SCALE}`}>
+      <div className={`relative ${HEIGHT} ${SCALE}`}>
         <Ground />
         <div
           style={sceneLeft}
@@ -213,8 +221,14 @@ export function Footer() {
                 </div>
               </div>
             </div>
-
-            <BadgeShelf className="absolute top-0 left-[488px] flex gap-8" />
+          </div>
+        </div>
+        {/* The badges centre on the screen rather than the scene: below 832px
+            the scene is cropped around the signpost, off its middle. Where
+            it isn't cropped the two centres are the same. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
+          <div className="pointer-events-auto origin-top scale-(--s)">
+            <BadgeShelf className="flex gap-8" />
           </div>
         </div>
         {/* Each shelf keeps its open side on its own screen edge; the signpost
