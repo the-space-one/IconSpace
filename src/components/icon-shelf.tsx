@@ -21,7 +21,8 @@ const plankWidth = (count: number) => 23 + 155 * count;
 // 320px phone. Overlay layout (≥ xl): 0.875 of the hero's scale
 // (min(1.5, W/1512)). The scale is fixed to the four-tile width, so a shorter
 // last shelf keeps the same tile size.
-const SCALE = "[--s:min(1,tan(atan2(100cqw,643px)))] xl:[--s:calc(0.875*min(1.5,tan(atan2(100vw,1512px))))]";
+const SCALE =
+  "[--w:100cqw] [--s:min(1,tan(atan2(var(--w),643px)))] xl:[--w:100vw] xl:[--s:calc(0.875*min(1.5,tan(atan2(var(--w),1512px))))]";
 const tile = "relative flex size-30 items-center justify-center rounded-tile shadow-tile";
 
 /**

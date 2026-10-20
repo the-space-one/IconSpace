@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* A width for the tan(atan2(width, size)) trick that turns a width into a
+   unitless scale. Safari works atan2() out wrongly when its lengths are
+   relative (100cqw, 100vw): on an iPhone the scales came out several times
+   too big and blew the scenes off the screen. Registered as a <length>, the
+   width is already absolute px when var() hands it to atan2(). Set it where
+   the scale is worked out, e.g. [--w:100cqw] [--s:tan(atan2(var(--w),520px))]. */
+@property --w {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #000000;

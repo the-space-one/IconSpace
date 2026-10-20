@@ -7,7 +7,7 @@ const GITHUB_URL = "https://github.com/the-space-one/IconSpace";
 
 export function Navbar() {
   return (
-    <nav className="mx-auto flex w-full max-w-[1253px] items-center xl:max-w-[max(1253px,calc(1253px*min(1.5,tan(atan2(100vw,1512px)))))] justify-between font-froundy max-[359px]:zoom-[0.9]">
+    <nav className="mx-auto flex w-full max-w-[1253px] items-center [--w:100vw] xl:max-w-[max(1253px,calc(1253px*min(1.5,tan(atan2(var(--w),1512px)))))] justify-between font-froundy max-[359px]:zoom-[0.9]">
       <div className="grid size-[61px] shrink-0 place-items-center">
         <CuriousMascot className="w-[45px]" />
       </div>

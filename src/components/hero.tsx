@@ -24,7 +24,7 @@ const stage =
 export function Hero() {
   return (
     <section className="@container w-full overflow-x-clip">
-      <div className="relative mx-auto [--s:min(1.1,tan(atan2(100cqw,520px)))] xl:mb-[calc(-190px*var(--s))] xl:w-[calc(1512px*var(--s))] xl:[--s:min(1.5,tan(atan2(100cqw,1512px)))]">
+      <div className="relative mx-auto [--w:100cqw] [--s:min(1.1,tan(atan2(var(--w),520px)))] xl:mb-[calc(-190px*var(--s))] xl:w-[calc(1512px*var(--s))] xl:[--s:min(1.5,tan(atan2(var(--w),1512px)))]">
         <div className="relative z-30 flex flex-col items-center px-4 xl:pointer-events-none xl:absolute xl:inset-x-0 xl:top-0 xl:px-0 xl:*:pointer-events-auto">
           <h1 className="w-[6.775em] text-center font-makenfy text-[clamp(2.25rem,11vw,5rem)] leading-none text-foreground xl:text-[length:calc(80px*var(--s))]">
             Premium animated Icons
