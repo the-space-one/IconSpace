@@ -17,7 +17,10 @@ const title = "IconSpace — Premium animated icons";
 const description =
   "Premium animated icons with fast, energetic motion that brings character and adds even more delight to every interaction.";
 
+// The share image is app/opengraph-image.jpg (1200×630), which Next also
+// uses for X's large card; metadataBase makes its URL absolute.
 export const metadata: Metadata = {
+  metadataBase: new URL("https://iconspace.dev"),
   title,
   description,
   openGraph: {
@@ -27,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description,
   },
