@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useBasket } from "@/components/basket-store";
 import { MANAGERS, RUNNERS, setManager, useManager } from "@/components/package-manager";
 
 const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grokbot"] as const;
@@ -259,12 +260,15 @@ export function InstallCard() {
   const [client, setClient] = useState<(typeof CLIENTS)[number]>("ChatGPT");
   const [mode, setMode] = useState<(typeof MODES)[number]>("CLI");
   const manager = useManager();
+  // The command installs whatever is in the basket, like the basket's own.
+  const { items } = useBasket();
+  const icons = items.length ? items.join(" ") : "cart";
   const [copied, setCopied] = useState(false);
   // The snippet only animates when the reader switches it, not on page load.
   const [switched, setSwitched] = useState(false);
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const snippet = mode === "MCP" ? MCP_SNIPPETS[client] : `${RUNNERS[manager]} iconspace add cart`;
+  const snippet = mode === "MCP" ? MCP_SNIPPETS[client] : `${RUNNERS[manager]} iconspace add ${icons}`;
 
   async function copy() {
     try {
@@ -324,8 +328,8 @@ export function InstallCard() {
 
       <div className="flex h-10 items-center gap-2 rounded-[12px] bg-surface pr-1 pl-3">
         <code
-          key={mode === "MCP" ? client : manager}
-          className={`min-w-0 flex-1 truncate font-mono @max-[31rem]:overflow-x-auto @max-[31rem]:pr-6 @max-[31rem]:text-clip @max-[31rem]:[scrollbar-width:none] @max-[31rem]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] text-[12px] @[21rem]:text-[13px] tracking-[-0.2px] text-foreground select-all ${switched ? "animate-snippet-in motion-reduce:animate-none" : ""}`}
+          key={mode === "MCP" ? client : `${manager} ${icons}`}
+          className={`min-w-0 flex-1 overflow-x-auto pr-6 font-mono whitespace-nowrap [scrollbar-width:none] [mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] text-[12px] @[21rem]:text-[13px] tracking-[-0.2px] text-foreground select-all ${switched || items.length ? "animate-snippet-in motion-reduce:animate-none" : ""}`}
         >
           {snippet !== MCP_URL && (
             <span aria-hidden className="mr-2 text-muted-foreground select-none">
