@@ -80,6 +80,82 @@ type Perforation = { anchor: number; particle: number; rest: number };
 
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
+// One renderer, and so one WebGL context and one set of compiled shaders, for
+// every receipt: making them on each Copy was a visible hitch, worst on slow
+// devices. Its canvas is hidden while no receipt is out. Slow devices (few
+// cores or little memory) draw the full-screen layer at 1×, the rest up to 2×.
+let shared: WebGLRenderer | undefined;
+let warmed: Scene | undefined;
+
+function renderer() {
+  if (shared) return shared;
+  const canvas = document.createElement("canvas");
+  const made = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
+  const memory = (navigator as { deviceMemory?: number }).deviceMemory ?? 8;
+  const slow = (navigator.hardwareConcurrency || 8) <= 4 || memory <= 4;
+  made.setPixelRatio(Math.min(devicePixelRatio, slow ? 1 : 2));
+  made.localClippingEnabled = true;
+  canvas.setAttribute("aria-hidden", "true");
+  canvas.className = "pointer-events-none fixed inset-0 z-[45] size-full";
+  canvas.style.visibility = "hidden";
+  canvas.addEventListener("webglcontextlost", () => {
+    canvas.remove();
+    shared = warmed = undefined;
+  });
+  document.body.append(canvas);
+  return (shared = made);
+}
+
+// Lit so a flat sheet facing the camera is exactly white; bends shade.
+function light(scene: Scene) {
+  scene.add(new AmbientLight(0xffffff, 0.64 * Math.PI));
+  const sun = new DirectionalLight(0xffffff, 0.42 * Math.PI);
+  sun.position.set(-0.35, 0.55, 1);
+  scene.add(sun);
+}
+
+function paperMaterial(art: HTMLCanvasElement, clip: Plane) {
+  const map = new CanvasTexture(art);
+  map.colorSpace = SRGBColorSpace;
+  map.minFilter = LinearMipmapLinearFilter;
+  map.anisotropy = renderer().capabilities.getMaxAnisotropy();
+  return new MeshLambertMaterial({
+    map,
+    side: DoubleSide, // thin paper: the print shows through, mirrored, on the back
+    alphaTest: 0.5,
+    alphaToCoverage: true,
+    clippingPlanes: [clip],
+  });
+}
+
+/**
+ * Makes the renderer and compiles the paper's shaders before the first Copy,
+ * in every state it takes: in the slot, torn free, and fading. The warm-up
+ * materials are kept, so their compiled programs stay cached.
+ */
+export async function warmUp() {
+  if (warmed) return;
+  try {
+    const gl = renderer();
+    const scene = (warmed = new Scene());
+    light(scene);
+    const art = document.createElement("canvas");
+    art.width = art.height = 1;
+    const plane = new Plane(new Vector3(0, 1, 0), 0);
+    const torn = paperMaterial(art, plane);
+    torn.clippingPlanes = [];
+    torn.transparent = true;
+    const fading = paperMaterial(art, plane);
+    fading.transparent = true;
+    for (const material of [paperMaterial(art, plane), torn, fading]) {
+      scene.add(new Mesh(new BufferGeometry(), material));
+    }
+    await gl.compileAsync(scene, new PerspectiveCamera());
+  } catch {
+    // No WebGL: Copy still copies, just without a ticket.
+  }
+}
+
 export class PaperStage {
   onTorn?: () => void;
   onDone?: () => void;
@@ -121,15 +197,9 @@ export class PaperStage {
   private frame = 0;
   private finished = false;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    this.renderer.localClippingEnabled = true;
-    // Lit so a flat sheet facing the camera is exactly white; bends shade.
-    this.scene.add(new AmbientLight(0xffffff, 0.64 * Math.PI));
-    const light = new DirectionalLight(0xffffff, 0.42 * Math.PI);
-    light.position.set(-0.35, 0.55, 1);
-    this.scene.add(light);
+  constructor() {
+    this.renderer = renderer();
+    light(this.scene);
     this.resize();
   }
 
@@ -158,19 +228,7 @@ export class PaperStage {
     this.slot = slot;
     this.slotPlane.constant = -this.world(0, slot.y)[1];
 
-    const material = (art: HTMLCanvasElement) => {
-      const map = new CanvasTexture(art);
-      map.colorSpace = SRGBColorSpace;
-      map.minFilter = LinearMipmapLinearFilter;
-      map.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
-      return new MeshLambertMaterial({
-        map,
-        side: DoubleSide, // thin paper: the print shows through, mirrored, on the back
-        alphaTest: 0.5,
-        alphaToCoverage: true,
-        clippingPlanes: [this.slotPlane],
-      });
-    };
+    const material = (art: HTMLCanvasElement) => paperMaterial(art, this.slotPlane);
 
     // The body: a grid of particles.
     this.cols = Math.max(4, Math.round(ticket.width / CELL));
@@ -256,6 +314,7 @@ export class PaperStage {
     this.stub = new Mesh(stubGeometry, material(ticket.stub));
     this.stub.frustumCulled = false;
     this.scene.add(this.stub, this.body);
+    this.renderer.domElement.style.visibility = "";
 
     this.sink = ticket.bodyHeight + ticket.reveal;
     this.layFlat();
@@ -279,8 +338,9 @@ export class PaperStage {
   private layFlat() {
     for (let k = 0; k < this.flat.length / 2; k++) {
       const [x, y] = this.place(this.flat[k * 2], this.flat[k * 2 + 1]);
-      this.pos.set([x, y, 0], k * 3);
-      this.prev.set([x, y, 0], k * 3);
+      this.pos[k * 3] = this.prev[k * 3] = x;
+      this.pos[k * 3 + 1] = this.prev[k * 3 + 1] = y;
+      this.pos[k * 3 + 2] = this.prev[k * 3 + 2] = 0;
     }
   }
 
@@ -441,6 +501,9 @@ export class PaperStage {
       }
     }
 
+    // The stub doesn't move within a step, so its anchors are placed once.
+    // (Math.sqrt, not Math.hypot, in these loops: hypot is several times slower.)
+    const anchors = this.torn ? [] : this.anchors.map(([x, y]) => this.place(x, y));
     for (let n = 0; n < ITERATIONS; n++) {
       for (const { a, b, rest, stiffness } of this.links) {
         const ax = a * 3;
@@ -448,7 +511,7 @@ export class PaperStage {
         const dx = pos[bx] - pos[ax];
         const dy = pos[bx + 1] - pos[ax + 1];
         const dz = pos[bx + 2] - pos[ax + 2];
-        const d = Math.hypot(dx, dy, dz) || 1e-6;
+        const d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-6;
         const shift = ((d - rest) / d) * 0.5 * stiffness;
         pos[ax] += dx * shift;
         pos[ax + 1] += dy * shift;
@@ -460,12 +523,12 @@ export class PaperStage {
       if (!this.torn) {
         for (const hole of this.holes) {
           for (const { anchor, particle, rest } of hole) {
-            const [ax, ay] = this.place(this.anchors[anchor][0], this.anchors[anchor][1]);
+            const [ax, ay] = anchors[anchor];
             const o = particle * 3;
             const dx = pos[o] - ax;
             const dy = pos[o + 1] - ay;
             const dz = pos[o + 2];
-            const d = Math.hypot(dx, dy, dz) || 1e-6;
+            const d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-6;
             const pull = ((d - rest) / d) * PERFORATION;
             pos[o] -= dx * pull;
             pos[o + 1] -= dy * pull;
@@ -541,7 +604,8 @@ export class PaperStage {
       mesh.material.map?.dispose();
       mesh.material.dispose();
     }
-    this.renderer.dispose();
-    this.renderer.forceContextLoss();
+    // The renderer is shared: clear it and hide it for the next receipt.
+    this.renderer.clear();
+    this.renderer.domElement.style.visibility = "hidden";
   }
 }

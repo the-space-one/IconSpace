@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "motion/react";
 import { basket, useBasket, type Toss } from "@/components/basket-store";
 import type { MotionRun } from "@/components/icon-motion";
@@ -180,7 +179,6 @@ function ReceiptPaper({ receipt, onKeep, onHold, onGone }: {
   onGone: () => void;
 }) {
   const mouth = useRef<HTMLSpanElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
   const stage = useRef<PaperStage | null>(null);
   const press = useRef<{ id: number; x: number; y: number; moved: boolean } | null>(null);
   const [height, setHeight] = useState(0);
@@ -206,9 +204,9 @@ function ReceiptPaper({ receipt, onKeep, onHold, onGone }: {
         edge: tearLine(receipt.key),
       });
       const { PaperStage } = await import("@/components/receipt-paper");
-      if (cancelled || !canvas.current || !mouth.current) return;
+      if (cancelled || !mouth.current) return;
       try {
-        made = new PaperStage(canvas.current);
+        made = new PaperStage();
       } catch {
         return gone(); // no WebGL: no ticket, the copy still worked
       }
@@ -298,10 +296,6 @@ function ReceiptPaper({ receipt, onKeep, onHold, onGone }: {
           }}
           className={styles.grip}
         />
-      )}
-      {createPortal(
-        <canvas ref={canvas} aria-hidden className="pointer-events-none fixed inset-0 z-[45] size-full" />,
-        document.body,
       )}
     </>
   );
@@ -408,9 +402,10 @@ export function Basket() {
     timers.current.dismiss = setTimeout(dismiss, TIMING.hold);
   }
 
-  // The paper's code (three.js) loads while the basket fills, not on Copy.
+  // The paper's code (three.js) loads, and its shaders compile, while the
+  // basket fills, not on Copy.
   useEffect(() => {
-    if (open) void import("@/components/receipt-paper");
+    if (open) void import("@/components/receipt-paper").then((paper) => paper.warmUp());
   }, [open]);
 
   // A printed receipt goes back in on Esc or a click anywhere but the dock.
