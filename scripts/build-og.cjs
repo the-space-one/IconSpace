@@ -1,22 +1,37 @@
-/* eslint-disable @typescript-eslint/no-require-imports -- Node-only renderer uses a CommonJS hook to render the project TSX assets. */
-/* Compose the share card from the project's actual icon components, mascot,
- * and brand fonts. Run: node scripts/build-og.cjs */
+/* eslint-disable @typescript-eslint/no-require-imports -- Node-only static artwork renderer. */
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const sharp = require('sharp');
+const readFont = require('next/dist/compiled/@next/font/dist/fontkit').default;
 const root = path.resolve(__dirname, '..');
+const output = path.join(root, 'public/og');
+const WIDTH = 1200;
+const HEIGHT = 630;
+const INK = '#171719';
+const PURPLE = '#655cf6';
+const CATS = [
+  { name: 'Shopping bag', file: 'shopping-bag', x: 65, y: 55, width: 150, height: 165 },
+  { name: 'Shopping cart', file: 'shopping-cart', x: 975, y: 65, width: 170, height: 156 },
+  { name: 'Laptop shopping', file: 'laptop-shopping', x: 60, y: 385, width: 190, height: 176 },
+  { name: 'Open box', file: 'open-box', x: 760, y: 465, width: 135, height: 126 },
+  { name: 'Stacked boxes', file: 'stacked-boxes', x: 970, y: 350, width: 180, height: 160 },
+];
+const WORDMARK = { x: 320, y: 233, width: 560 };
+const ICONS = ['HeartIcon', 'SparkleIcon', 'CodeIcon'];
+const ICON_SIZE = 36;
+const ICON_GAP = 28;
+const ICON_TOP = 405;
+const DESCRIPTION_TOP = 357;
+const URL_TOP = 574;
+const ALT = 'Icon Space. Premium animated icons. Five original purple cat illustrations surround the lavender wordmark, with heart, sparkle, and code icons on a white background.';
 
-// Render the icons at their initial pose, without starting their animations.
+// Render the real product components in their resting pose.
 for (const extension of ['.tsx', '.ts']) {
   require.extensions[extension] = (module, filename) => {
-    module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8').replace(
-      'import { Hedges } from "@/components/hedges";',
-      // The static OG needs the original SVG fallback, not the Rive runtime.
-      'const Hedges = ({ children }: { children: ReactNode }) => <>{children}</>;'
-    ), {
+    module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
       compilerOptions: {
         jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS,
         target: ts.ScriptTarget.ES2020, esModuleInterop: true,
@@ -24,71 +39,72 @@ for (const extension of ['.tsx', '.ts']) {
     }).outputText, filename);
   };
 }
-const { HeroCatArtwork, EYES } = require('../src/components/hero-cat-artwork.tsx');
-const cat = renderToStaticMarkup(React.createElement(HeroCatArtwork)) +
-  EYES.paths.map(d => `<path fill="#9fa1ff" d="${d}"/>`).join('');
-function icon(name, x, y, size, angle = 0, color = '#171719') {
-  const Component = require(`../src/icons/${name}.tsx`)[name];
-  const markup = renderToStaticMarkup(React.createElement(Component, { width: size, height: size, color }));
-  return `<g transform="translate(${x} ${y}) rotate(${angle} ${size / 2} ${size / 2})">${markup}</g>`;
+
+function asset(file, name, x, y, width, height) {
+  const svg = fs.readFileSync(path.join(output, 'assets', `${file}.svg`), 'utf8');
+  const viewBox = svg.match(/viewBox="([^"]+)"/);
+  if (!viewBox || !svg.includes('<path')) throw new Error(`Invalid original SVG: ${file}`);
+  const [left, top, sourceWidth, sourceHeight] = viewBox[1].split(/\s+/).map(Number);
+  const scale = Math.min(width / sourceWidth, (height ?? Infinity) / sourceHeight);
+  const dx = x + (width - sourceWidth * scale) / 2;
+  const dy = y + (height === undefined ? 0 : (height - sourceHeight * scale) / 2);
+  // Preserve the exported vectors and paints; namespace IDs when combining assets.
+  const body = svg.slice(svg.indexOf('>') + 1, svg.lastIndexOf('</svg>'))
+    .replace(/id="([^"]+)"/g, `id="${file}-$1"`)
+    .replace(/url\(#([^)]+)\)/g, `url(#${file}-$1)`);
+  return `<g id="${name}" transform="translate(${dx} ${dy}) scale(${scale}) translate(${-left} ${-top})">${body}</g>`;
 }
-// Use the website's complete shop illustration in its original resting pose.
-const { ShopBack, ShopFront } = require('../src/components/shop-scene.tsx');
-const shop = [ShopBack, ShopFront]
-  .flatMap(Component => [...renderToStaticMarkup(React.createElement(Component)).matchAll(/<svg\b[^>]*>[\s\S]*?<\/svg>/g)].map(match => match[0]))
-  .join('')
-  .replaceAll(/<svg[^>]*>/g, '<g fill="none">')
-  .replaceAll('</svg>', '</g>');
-const artwork = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#ededff"/>
-  <rect x="16" y="16" width="1168" height="598" rx="22" fill="#ffffff"/>
-  <g transform="translate(65 58) scale(.19)">${cat}</g>
-  <svg x="626" y="151" width="548" height="438" viewBox="-10 45 470 375">${shop}</svg>
-  ${icon('HeartIcon', 70, 475, 34)}
-  ${icon('SparkleIcon', 145, 475, 34)}
-  ${icon('GlobeSpinIcon', 220, 475, 34)}
-  ${icon('RocketIcon', 295, 475, 34)}
-  ${icon('CodeIcon', 370, 475, 34)}
-</svg>`;
-async function textLayer(text, font, size, left, top, color = '#111113') {
-  // Outline the bundled WOFF2 font so exports never depend on system fonts.
-  const readFont = require('next/dist/compiled/@next/font/dist/fontkit').default;
-  const face = readFont(fs.readFileSync(path.join(root, `src/fonts/${font}-Regular.woff2`)));
-  const run = face.layout(text);
+
+function centeredText(label, size, top, color, name) {
+  const face = readFont(fs.readFileSync(path.join(root, 'src/fonts/Froundy-Regular.woff2')));
+  const run = face.layout(label);
   const scale = size / face.unitsPerEm;
-  let x = 0;
+  let pen = 0;
+  let minX = Infinity;
+  let maxX = -Infinity;
   let maxY = -Infinity;
-  let minY = Infinity;
   const paths = run.glyphs.map((glyph, i) => {
     const position = run.positions[i];
-    maxY = Math.max(maxY, glyph.bbox.maxY + position.yOffset);
-    minY = Math.min(minY, glyph.bbox.minY + position.yOffset);
-    const markup = `<path transform="translate(${x + position.xOffset} ${position.yOffset})" d="${glyph.path.toSVG()}"/>`;
-    // The display face has a very narrow space. Keep whole words distinct
-    // at thumbnail size without loosening the character shapes themselves.
-    x += glyph.codePoints.includes(32) && font === 'Makenfy'
-      ? Math.max(position.xAdvance, face.unitsPerEm * .27)
-      : position.xAdvance;
-    return markup;
+    const x = pen + position.xOffset;
+    const y = position.yOffset;
+    if (glyph.path.commands.length) {
+      minX = Math.min(minX, x + glyph.bbox.minX);
+      maxX = Math.max(maxX, x + glyph.bbox.maxX);
+      maxY = Math.max(maxY, y + glyph.bbox.maxY);
+    }
+    pen += position.xAdvance;
+    return `<path transform="translate(${x} ${y})" d="${glyph.path.toSVG()}"/>`;
   }).join('');
-  const width = Math.ceil(x * scale) + 2;
-  const height = Math.ceil((maxY - minY) * scale) + 2;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><g fill="${color}" transform="translate(1 ${maxY * scale + 1}) scale(${scale} ${-scale})">${paths}</g></svg>`;
-  const input = await sharp(Buffer.from(svg), { density: 144 }).png().toBuffer();
-  return { input, left: left * 2, top: top * 2 };
+  const left = (WIDTH - (maxX - minX) * scale) / 2 - minX * scale;
+  return `<g id="${name}" aria-label="${label}" fill="${color}" transform="translate(${left} ${top + maxY * scale}) scale(${scale} ${-scale})">${paths}</g>`;
 }
+
 async function main() {
-  const layers = [
-    await textLayer('IconSpace', 'Froundy', 27, 118, 66),
-    await textLayer('iconspace.dev', 'Froundy', 17, 1010, 72, '#737373'),
-    await textLayer('Beautifully', 'Makenfy', 84, 66, 202),
-    await textLayer('crafted icons.', 'Makenfy', 84, 66, 292, '#7779d9'),
-    await textLayer('Animated with character.', 'Froundy', 23, 69, 402, '#616161'),
-  ];
-  const png = await sharp(Buffer.from(artwork), { density: 144 }).composite(layers).png().toBuffer();
-  fs.mkdirSync(path.join(root, 'public/og'), { recursive: true });
-  await sharp(png).toFile(path.join(root, 'public/og/iconspace-og.png'));
-  await sharp(png).resize(1200, 630).jpeg({ quality: 94, chromaSubsampling: '4:4:4' }).toFile(path.join(root, 'src/app/opengraph-image.jpg'));
-  console.log('Created public/og/iconspace-og.png (2400×1260) and src/app/opengraph-image.jpg (1200×630)');
+  // Build everything before replacing production exports: missing assets fail safely.
+  const cats = CATS.map(c => asset(c.file, c.name, c.x, c.y, c.width, c.height)).join('\n');
+  const brand = asset('wordmark', 'Brand', WORDMARK.x, WORDMARK.y, WORDMARK.width);
+  const rowWidth = ICONS.length * ICON_SIZE + (ICONS.length - 1) * ICON_GAP;
+  const icons = ICONS.map((name, i) => {
+    const Component = require(`../src/icons/${name}.tsx`)[name];
+    const svg = renderToStaticMarkup(React.createElement(Component, { width: ICON_SIZE, height: ICON_SIZE, color: PURPLE })).replaceAll('currentColor', PURPLE);
+    return `<g id="${name}" transform="translate(${(WIDTH - rowWidth) / 2 + i * (ICON_SIZE + ICON_GAP)} ${ICON_TOP})">${svg}</g>`;
+  }).join('\n');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
+<title>OG / Cat ensemble / 1200×630</title>
+<rect id="Background" width="${WIDTH}" height="${HEIGHT}" fill="#ffffff"/>
+${brand}
+${centeredText('Premium animated icons', 32, DESCRIPTION_TOP, INK, 'Description')}
+<g id="Product icons">${icons}</g>
+<g id="Cats">${cats}</g>
+${centeredText('iconspace.dev', 18, URL_TOP, '#666674', 'URL')}
+</svg>`;
+  const png = await sharp(Buffer.from(svg), { density: 144 }).png().toBuffer();
+  const jpeg = await sharp(png).resize(WIDTH, HEIGHT).jpeg({ quality: 94, chromaSubsampling: '4:4:4' }).toBuffer();
+  if (jpeg.length >= 1000000) throw new Error('OG JPEG exceeds the 1 MB budget');
+  fs.writeFileSync(path.join(output, 'iconspace-og.svg'), svg);
+  fs.writeFileSync(path.join(output, 'iconspace-og.png'), png);
+  fs.writeFileSync(path.join(root, 'src/app/opengraph-image.jpg'), jpeg);
+  fs.writeFileSync(path.join(root, 'src/app/opengraph-image.alt.txt'), `${ALT}\n`);
+  console.log(`Created editable SVG, 2400×1260 PNG, and 1200×630 JPEG (${jpeg.length} bytes).`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

@@ -1,0 +1,34 @@
+{
+  "figmaFileKey": "mlY136dj2nfhx4FYzyVnRn",
+  "sourcePageId": "3:25",
+  "compositionNodeId": "2714:85",
+  "compositionUrl": "https://www.figma.com/design/mlY136dj2nfhx4FYzyVnRn/The-Space?node-id=2714-85",
+  "assets": [
+    {
+      "file": "shopping-bag.svg",
+      "nodeId": "2208:421"
+    },
+    {
+      "file": "shopping-cart.svg",
+      "nodeId": "2208:455"
+    },
+    {
+      "file": "laptop-shopping.svg",
+      "nodeId": "2208:611"
+    },
+    {
+      "file": "open-box.svg",
+      "nodeId": "2208:519"
+    },
+    {
+      "file": "stacked-boxes.svg",
+      "nodeId": "2208:663"
+    },
+    {
+      "file": "wordmark.svg",
+      "nodeId": "2208:319"
+    }
+  ],
+  "exportedAt": "2026-10-20",
+  "notes": "Original Figma SVG exports with source paints preserved. Production text uses bundled Froundy outlines. The Figma composition is editable vector artwork; text is outlined to preserve fonts. Regenerate with node scripts/build-og.cjs."
+}
