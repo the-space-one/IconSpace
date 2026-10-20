@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useBasket } from "@/components/basket-store";
 import { MANAGERS, RUNNERS, setManager, useManager } from "@/components/package-manager";
 
-const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grok"] as const;
+const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grok bot"] as const;
 const MODES = ["CLI", "MCP"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
@@ -13,7 +13,7 @@ const MCP_SNIPPETS: Record<(typeof CLIENTS)[number], string> = {
   ChatGPT: MCP_URL,
   Claude: MCP_URL,
   Cursor: "npx iconspace mcp init --client cursor",
-  Grok: MCP_URL,
+  "Grok bot": MCP_URL,
 };
 
 // Card radius 18 = well/track radius 12 + card padding 6;
@@ -52,7 +52,7 @@ const CLIENT_ICONS: Record<(typeof CLIENTS)[number], ReactNode> = {
       <path opacity=".2" d="M15.302 4 8.165 8 1.027 4z" />
     </svg>
   ),
-  Grok: (
+  "Grok bot": (
     <span aria-hidden className="grid size-4 shrink-0 place-items-center rounded-[4px] bg-current">
       <svg viewBox="0 0 24 24" className="size-full">
         <path fill="white" d="M11.625 4.75916C15.6777 4.50184 19.1704 7.58146 19.4225 11.6345C19.6746 15.6875 16.5905 19.1762 12.5372 19.423C8.49119 19.6695 5.01021 16.5923 4.75856 12.5466C4.50691 8.50096 7.57971 5.01603 11.625 4.75916Z" />
