@@ -7,6 +7,13 @@ const CLIENTS = ["ChatGPT", "Claude", "Cursor", "Grokbot"] as const;
 const MODES = ["CLI", "MCP"] as const;
 
 const MCP_URL = "https://mcp.iconspace.dev/mcp";
+// Apps take the URL as a custom connector; coding tools get a command.
+const MCP_SNIPPETS: Record<(typeof CLIENTS)[number], string> = {
+  ChatGPT: MCP_URL,
+  Claude: `claude mcp add --transport http iconspace ${MCP_URL}`,
+  Cursor: "npx iconspace mcp init --client cursor",
+  Grokbot: MCP_URL,
+};
 
 // Card radius 18 = well/track radius 12 + card padding 6;
 // thumb radius 8 = track radius 12 + track padding 4.
@@ -257,7 +264,7 @@ export function InstallCard() {
   const [switched, setSwitched] = useState(false);
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const snippet = mode === "MCP" ? MCP_URL : `${RUNNERS[manager]} iconspace add cart`;
+  const snippet = mode === "MCP" ? MCP_SNIPPETS[client] : `${RUNNERS[manager]} iconspace add cart`;
 
   async function copy() {
     try {
@@ -291,11 +298,16 @@ export function InstallCard() {
             ),
             MCP: (
               <Segmented label="Client" options={CLIENTS} icons={CLIENT_ICONS} iconsFrom={ICONS_FROM.clients}
-                value={client} onChange={setClient} />
+                value={client}
+                onChange={(next) => {
+                  setClient(next);
+                  setSwitched(true);
+                }}
+              />
             ),
           }}
         />
-        <div className="w-full @[31rem]:ml-auto @[31rem]:w-auto">
+        <div className="order-first w-full @[31rem]:order-none @[31rem]:ml-auto @[31rem]:w-auto">
           <Segmented
             label="Install method"
             options={MODES}
@@ -312,10 +324,10 @@ export function InstallCard() {
 
       <div className="flex h-10 items-center gap-2 rounded-[12px] bg-surface pr-1 pl-3">
         <code
-          key={snippet}
-          className={`min-w-0 flex-1 truncate font-mono text-[12px] @[21rem]:text-[13px] tracking-[-0.2px] text-foreground select-all ${switched ? "animate-snippet-in motion-reduce:animate-none" : ""}`}
+          key={mode === "MCP" ? client : manager}
+          className={`min-w-0 flex-1 truncate font-mono @max-[31rem]:overflow-x-auto @max-[31rem]:pr-6 @max-[31rem]:text-clip @max-[31rem]:[scrollbar-width:none] @max-[31rem]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] text-[12px] @[21rem]:text-[13px] tracking-[-0.2px] text-foreground select-all ${switched ? "animate-snippet-in motion-reduce:animate-none" : ""}`}
         >
-          {mode === "CLI" && (
+          {snippet !== MCP_URL && (
             <span aria-hidden className="mr-2 text-muted-foreground select-none">
               $
             </span>

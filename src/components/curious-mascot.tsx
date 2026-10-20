@@ -143,22 +143,23 @@ export function CuriousMascot({ className }: { className?: string }) {
       targetY.set(near ? latest.y : 0);
       setStage(near ? 7 : 0);
     };
+    const playGreeting = () => {
+      greeted.current = true;
+      pose(POSES.notice, 1);
+      later(() => pose(POSES.follow, 2), TIMING.follow);
+      later(() => pose(POSES.hold, 3, false, false, TIMING.recover), TIMING.hold);
+      later(() => {
+        showEyes(true);
+        pose(POSES.pleased, 4, false, false, TIMING.nod - TIMING.pleased);
+      }, TIMING.pleased);
+      later(() => pose(POSES.nod, 5), TIMING.nod);
+      later(() => { showEyes(false); pose(POSES.rest, 6, false, true); }, TIMING.settle);
+      later(() => { greeting = false; followLatest(); }, TIMING.finish);
+    };
     const greet = () => {
       if (greeted.current || reduced) return;
       greeting = true; // Own the delay, too: a nearby cursor cannot eat it.
-      later(() => {
-        greeted.current = true;
-        pose(POSES.notice, 1);
-        later(() => pose(POSES.follow, 2), TIMING.follow);
-        later(() => pose(POSES.hold, 3, false, false, TIMING.recover), TIMING.hold);
-        later(() => {
-          showEyes(true);
-          pose(POSES.pleased, 4, false, false, TIMING.nod - TIMING.pleased);
-        }, TIMING.pleased);
-        later(() => pose(POSES.nod, 5), TIMING.nod);
-        later(() => { showEyes(false); pose(POSES.rest, 6, false, true); }, TIMING.settle);
-        later(() => { greeting = false; followLatest(); }, TIMING.finish);
-      }, TIMING.greetDelay);
+      later(playGreeting, TIMING.greetDelay);
     };
     const measure = () => {
       const rect = button.getBoundingClientRect();
@@ -190,6 +191,15 @@ export function CuriousMascot({ className }: { className?: string }) {
     };
     const hello = (keyboard: boolean) => {
       if (!active || acknowledging) return;
+      // Touch never gets the gaze follow, so a tap plays the whole greeting;
+      // taps during it are ignored rather than restarting it.
+      if (!keyboard && !reduced && !fine.matches) {
+        if (greeting) return;
+        clear();
+        greeting = true;
+        playGreeting();
+        return;
+      }
       clear();
       greeted.current = true;
       greeting = false;

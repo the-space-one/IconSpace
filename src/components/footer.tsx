@@ -14,8 +14,10 @@ const SCALE =
 
 // Centres the scene; when it's wider than the viewport, keeps x=656 in the
 // middle so the signpost stays in frame. (The badges centre on their own.)
+// Kept as --left so the forklift can find the screen's right edge.
 const sceneLeft = {
-  left: "max((100% - 1512px * var(--s)) / 2, min(0px, max(100% - 1512px * var(--s), 50% - 656px * var(--s))))",
+  "--left": "max((var(--w) - 1512px * var(--s)) / 2, min(0px, max(var(--w) - 1512px * var(--s), var(--w) / 2 - 656px * var(--s))))",
+  left: "var(--left)",
 } as CSSProperties;
 
 /* Ground, redrawn from the shelves art as repeating bands so it can run edge to
@@ -201,10 +203,12 @@ export function Footer() {
             {/* From xl the signpost and shelves sit out at the screen edges,
                 --edge (scene units) away from the scene. The forklift parks
                 that much further left, beside the signpost, and drives that
-                much further right, to the shelf. */}
+                much further right, to the shelf. Below xl, where the scene
+                is cropped, it stops short of the right screen edge instead:
+                496 start + 192 body + 24 margin = 712. */}
             <div
               style={forkliftRoute}
-              className="absolute top-[277.65px] left-[496px] animate-forklift-drive [--drive:var(--to-shelf)] motion-reduce:animate-none xl:left-[calc(496px_-_var(--edge))] xl:[--drive:calc(var(--to-shelf)_+_2*var(--edge))]"
+              className="absolute top-[277.65px] left-[496px] animate-forklift-drive [--drive:min(var(--to-shelf),calc((var(--w)_-_var(--left))_/_var(--s)_-_712px))] motion-reduce:animate-none xl:left-[calc(496px_-_var(--edge))] xl:[--drive:calc(var(--to-shelf)_+_2*var(--edge))]"
             >
               {EXHAUST_DELAYS.map((delay) => (
                 <span

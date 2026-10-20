@@ -148,6 +148,11 @@ async function handle(request: Request) {
       { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS } },
     );
   }
+  // Stateless, so there's nothing to push on a standalone SSE stream; without
+  // this the stream stays open, holding a function until it times out.
+  if (request.method === "GET") {
+    return new Response(null, { status: 405, headers: { Allow: "POST, DELETE, OPTIONS", ...CORS } });
+  }
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,

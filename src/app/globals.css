@@ -820,6 +820,16 @@ body {
     animation: cta-cat-blink 180ms ease-in-out 220ms;
   }
 }
+/* Touch has no hover, so the press plays the same lean and blink. */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .cta:has(.cta__button:active) .cta-cat__head {
+    transform: rotate(2deg);
+    transition-duration: 120ms;
+  }
+  .cta:has(.cta__button:active) .cta-cat__eye {
+    animation: cta-cat-blink 180ms ease-in-out;
+  }
+}
 .cta:has(.cta__button:focus-visible) .cta-cat__head {
   transform: rotate(2deg);
   transition: none;
