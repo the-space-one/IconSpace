@@ -45,4 +45,6 @@ export const instructions = (url = MCP_URL) => [
   `ChatGPT, Claude, Grok and other apps: add a custom connector (remote MCP server) with the URL ${url}`,
   `Claude Code: claude mcp add --transport http ${SERVER} ${url}`,
   `Cursor, VS Code, Claude Code (this project): npx iconspace mcp init`,
+  `Codex: codex mcp add ${SERVER} --url ${url}`,
+  `Windsurf: add "${SERVER}": { "serverUrl": "${url}" } under mcpServers in ~/.codeium/windsurf/mcp_config.json`,
 ];

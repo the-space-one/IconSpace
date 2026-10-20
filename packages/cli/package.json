@@ -1,6 +1,6 @@
 {
   "name": "iconspace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Add IconSpace animated icons to your React project, and connect your AI tools to the IconSpace MCP server.",
   "homepage": "https://iconspace.dev",
   "keywords": [

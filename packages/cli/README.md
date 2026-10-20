@@ -18,6 +18,8 @@ npx iconspace mcp                # connect AI tools to the IconSpace MCP server
 npx iconspace mcp init           # write MCP config for Claude Code, Cursor or VS Code
 ```
 
+On Yarn 1, which has no `dlx`, install the CLI first: `yarn add -D iconspace && yarn iconspace add cart bell`.
+
 | Option | |
 | --- | --- |
 | `-d, --dir <path>` | Folder for the icon files. Default: `src/components/icons`, or `components/icons` without a `src/` folder. |
@@ -62,6 +64,8 @@ https://mcp.iconspace.dev/mcp
 - **ChatGPT, Claude, Grok and other apps:** add a custom connector (remote MCP server) with that URL.
 - **Claude Code:** `claude mcp add --transport http iconspace https://mcp.iconspace.dev/mcp`
 - **Cursor, VS Code, or Claude Code for one project:** `npx iconspace mcp init`
+- **Codex:** `codex mcp add iconspace --url https://mcp.iconspace.dev/mcp`
+- **Windsurf:** add `"iconspace": { "serverUrl": "https://mcp.iconspace.dev/mcp" }` under `mcpServers` in `~/.codeium/windsurf/mcp_config.json`
 
 Its tools are `search_icons`, `get_icon` (the source files, dependencies and a usage example) and `get_install_command`.
 

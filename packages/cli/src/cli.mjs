@@ -157,7 +157,7 @@ async function add(names, options) {
     written.push(file.path);
   }
   if (written.length) p.log.success(`Wrote ${join_(written)} to ${shown}`);
-  else p.log.info(`${shown} already has ${icons.length === 1 ? "this icon" : "these icons"}.`);
+  else if (!kept.length) p.log.info(`${shown} already has ${icons.length === 1 ? "this icon" : "these icons"}.`);
   if (kept.length) p.log.warn(`Kept your ${join_(kept)}: ${kept.length === 1 ? "it differs" : "they differ"} from IconSpace's. Add --overwrite to replace.`);
 
   const deps = [...new Set(items.flatMap((item) => item.dependencies))];
