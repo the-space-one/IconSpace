@@ -107,4 +107,7 @@ ${centeredText('iconspace.dev', 18, URL_TOP, '#666674', 'URL')}
   fs.writeFileSync(path.join(root, 'src/app/opengraph-image.alt.txt'), `${ALT}\n`);
   console.log(`Created editable SVG, 2400×1260 PNG, and 1200×630 JPEG (${jpeg.length} bytes).`);
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { asset, centeredText };
+if (require.main === module) {
+  main().catch(error => { console.error(error); process.exitCode = 1; });
+}
